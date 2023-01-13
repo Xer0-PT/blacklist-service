@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlackList.Application\BlackList.Application.csproj" />
+    <ProjectReference Include="..\BlackList.Persistence\BlackList.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
