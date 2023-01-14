@@ -1,15 +1,31 @@
+using BlackList.Api.Extensions;
 using BlackList.Application.Abstractions;
 using BlackList.Application.Services;
+using BlackList.Persistence.Data;
+using BlackList.Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-builder.Services.AddScoped<IBlackListService, BlackListService>();
-builder.Services.AddScoped<IUserService, UserService>();
+//var connectionString = builder.Configuration.GetConnectionString("BlackList");
 
-// TODO Register AutoMapper
+// Add AutoMapper
+builder.Services.AddSingleton(AddAutoMapperConfig.Initialize());
+
+// Add DbContext
+builder.Services.AddDbContext<BlackListServiceDbContext>();
+
+// Add Persistence Services
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IBlackListedPlayerRepository, BlackListedPlayerRepository>();
+
+// Add services to the container
+builder.Services.AddSingleton<Random>();
+builder.Services.AddScoped<IBlackListedPlayerService, BlackListedPlayerService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

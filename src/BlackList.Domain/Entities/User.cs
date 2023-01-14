@@ -1,12 +1,14 @@
 ﻿namespace BlackList.Domain.Entities;
 
-public class User
+public class User : EntityBase
 {
-    public User(string token)
+    public User(string token, DateTimeOffset createdAt)
     {
         Token = token;
+        BlackListedPlayers = new List<BlackListedPlayer>();
+        CreatedAt = createdAt;
     }
 
-    public long Id { get; set; }
-    public string Token { get; set; }
+    public string Token { get; set; } = string.Empty;
+    public ICollection<BlackListedPlayer> BlackListedPlayers { get; set; }
 }
