@@ -20,12 +20,13 @@ builder.Services.AddDbContext<BlackListServiceDbContext>(options =>
 
 // Add Persistence Services
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IBlackListRepository, BlackListRepository>();
+builder.Services.AddTransient<IBlackListedPlayerRepository, BlackListedPlayerRepository>();
 
 // Add services to the container
 builder.Services.AddSingleton<Random>();
-builder.Services.AddScoped<IBlackListService, BlackListService>();
+builder.Services.AddScoped<IBlackListedPlayerService, BlackListedPlayerService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddControllers();
 

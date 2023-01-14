@@ -24,5 +24,9 @@ public class UserMapping : IEntityTypeConfiguration<User>
             .Property(x => x.Token)
             .HasColumnName("token");
 
+        builder
+            .Property(x => x.CreatedAt)
+            .HasColumnName("createdAt");
+
     }
 }

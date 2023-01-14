@@ -1,20 +1,18 @@
 ﻿namespace BlackList.Domain.Entities;
 
-public class BlackListedPlayer
+public class BlackListedPlayer : EntityBase
 {
     public BlackListedPlayer()
-    {
-    }
+    {}
 
-    public BlackListedPlayer(string nickname, long userId, User user)
+    public BlackListedPlayer(long userId, string nickname, DateTimeOffset createdAt)
     {
-        Nickname = nickname;
         UserId = userId;
-        User = user;
+        Nickname = nickname;
+        CreatedAt = createdAt;
     }
 
-    public long Id { get; set; }
     public long UserId { get; set; }
-    public User User { get; set; }
-    public string Nickname { get; set; }
+    public string Nickname { get; set; } = string.Empty;
+    public User User { get; set; } = null!;
 }
