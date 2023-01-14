@@ -3,29 +3,26 @@ using BlackList.Application.Abstractions;
 using BlackList.Application.Services;
 using BlackList.Persistence.Data;
 using BlackList.Persistence.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("BlackList");
+//var connectionString = builder.Configuration.GetConnectionString("BlackList");
 
 // Add AutoMapper
 builder.Services.AddSingleton(AddAutoMapperConfig.Initialize());
 
 // Add DbContext
-builder.Services.AddDbContext<BlackListServiceDbContext>(options =>
-{
-    options.UseNpgsql(connectionString);
-});
+builder.Services.AddDbContext<BlackListServiceDbContext>();
 
 // Add Persistence Services
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IBlackListRepository, BlackListRepository>();
+builder.Services.AddTransient<IBlackListedPlayerRepository, BlackListedPlayerRepository>();
 
 // Add services to the container
 builder.Services.AddSingleton<Random>();
-builder.Services.AddScoped<IBlackListService, BlackListService>();
+builder.Services.AddScoped<IBlackListedPlayerService, BlackListedPlayerService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddControllers();
 

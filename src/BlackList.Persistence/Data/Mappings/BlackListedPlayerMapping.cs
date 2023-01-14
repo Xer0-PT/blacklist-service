@@ -28,5 +28,9 @@ public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlay
         builder
             .Property(x => x.Nickname)
             .HasColumnName("nickName");
+        
+        builder
+            .Property(x => x.CreatedAt)
+            .HasColumnName("createdAt");
     }
 }
