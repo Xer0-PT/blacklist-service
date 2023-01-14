@@ -3,16 +3,22 @@ using BlackList.Application.Abstractions;
 using BlackList.Application.Services;
 using BlackList.Persistence.Data;
 using BlackList.Persistence.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//var connectionString = builder.Configuration.GetConnectionString("BlackList");
+var connectionString = builder.Configuration.GetConnectionString("BlackList");
 
 // Add AutoMapper
 builder.Services.AddSingleton(AddAutoMapperConfig.Initialize());
 
 // Add DbContext
-builder.Services.AddDbContext<BlackListServiceDbContext>();
+builder.Services.AddDbContext<BlackListServiceDbContext>(o =>
+{
+    o.UseNpgsql(
+        connectionString,
+        options => options.EnableRetryOnFailure());
+});
 
 // Add Persistence Services
 builder.Services.AddTransient<IUserRepository, UserRepository>();
