@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      uses: johnbeynon/render-deploy-action
-      with:
-        service-id: ${{ secrets.UAT_SERVICE_ID }}
-        api-key: ${{ secrets.RENDER_API_KEY }}
+      - uses: johnbeynon/render-deploy-action
+        with:
+          service-id: ${{ secrets.UAT_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
