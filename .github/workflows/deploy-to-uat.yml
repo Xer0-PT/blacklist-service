@@ -11,7 +11,7 @@ jobs:
         run: |
           set -e
           status_code=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.UAT_HOOK }})
-          if [[ "$status_code" != "201" ]]; then
+          if [[ "$status_code" != "200" ]]; then
             echo "Unexpected response: $status_code"
             exit 1
           fi
