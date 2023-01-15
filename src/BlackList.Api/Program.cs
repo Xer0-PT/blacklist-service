@@ -4,7 +4,6 @@ using BlackList.Application.Services;
 using BlackList.Persistence.Data;
 using BlackList.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,17 +18,6 @@ builder.Services.AddDbContext<BlackListServiceDbContext>(opt =>
     opt.UseNpgsql(
         connectionString,
         options => options.EnableRetryOnFailure());
-    //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-    //{
-    //    //    var m = Regex.Match(Environment.GetEnvironmentVariable("DATABASE_URL")!, @"postgres://(.*):(.*)@(.*):(.*)/(.*)");
-    //    //    opt.UseNpgsql($"Server={m.Groups[3]};Port={m.Groups[4]};User Id={m.Groups[1]};Password={m.Groups[2]};Database={m.Groups[5]};sslmode=Prefer;Trust Server Certificate=true");
-    //}
-    //else
-    //{
-    //    opt.UseNpgsql(
-    //    connectionString,
-    //    options => options.EnableRetryOnFailure());
-    //}
 });
 
 // Add Persistence Services
@@ -47,6 +35,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Enable CORS policy
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.WithOrigins(builder.Configuration["AllowedHosts"]);
+    });
+});
 
 var app = builder.Build();
 
