@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build Service
         run: |
-        docker-compose -f ./src/BlackList.Api/docker-compose.yml
+          docker-compose -f ./src/BlackList.Api/docker-compose.yml
 
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
