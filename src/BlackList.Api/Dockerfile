@@ -6,7 +6,6 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
 COPY ["src/BlackList.Api/BlackList.Api.csproj", "src/BlackList.Api/"]
 COPY ["src/BlackList.Application/BlackList.Application.csproj", "src/BlackList.Application/"]
 COPY ["src/BlackList.Domain/BlackList.Domain.csproj", "src/BlackList.Domain/"]
