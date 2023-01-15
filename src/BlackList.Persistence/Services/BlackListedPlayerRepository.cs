@@ -21,9 +21,9 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
 
     public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(long userId, string nickname, CancellationToken cancellationToken)
     {
-        var aaa = await _context.BlackListedPlayer.FirstOrDefaultAsync(x => x.UserId == userId && x.Nickname == nickname, cancellationToken);
+        var player = await _context.BlackListedPlayer.FirstOrDefaultAsync(x => x.UserId == userId && x.Nickname == nickname, cancellationToken);
 
-        if (aaa is not null)
+        if (player is not null)
         {
             throw new InvalidOperationException();
         }
