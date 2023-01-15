@@ -7,10 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["BlackList.Api/BlackList.Api.csproj", "BlackList.Api/"]
-RUN dotnet restore "BlackList.Api/BlackList.Api.csproj"
+COPY ["src/BlackList.Api/BlackList.Api.csproj", "src/BlackList.Api/"]
+COPY ["src/BlackList.Application/BlackList.Application.csproj", "src/BlackList.Application/"]
+COPY ["src/BlackList.Domain/BlackList.Domain.csproj", "src/BlackList.Domain/"]
+COPY ["src/BlackList.Persistence/BlackList.Persistence.csproj", "src/BlackList.Persistence/"]
+RUN dotnet restore "src/BlackList.Api/BlackList.Api.csproj"
 COPY . .
-WORKDIR "/src/BlackList.Api"
+WORKDIR "/src/src/BlackList.Api"
 RUN dotnet build "BlackList.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

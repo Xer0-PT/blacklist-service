@@ -49,7 +49,7 @@ public class BlackListServiceContextFactory : IDesignTimeDbContextFactory<BlackL
 
     public BlackListServiceDbContext CreateDbContext(string[] args)
     {
-        var connectionString = _configuration!.GetConnectionString("BlackList");
+        var connectionString = args[0];
         var optionsBuilder = new DbContextOptionsBuilder<BlackListServiceDbContext>();
 
         optionsBuilder.UseNpgsql(connectionString);
