@@ -9,4 +9,9 @@ jobs:
     steps:
       - name: Deploy Hook
         run: |
-          curl -X POST ${{ secrets.UAT_HOOK }}
+          set -e
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.UAT_HOOK }})
+          if [[ "$status_code" != "201" ]]; then
+            echo "Unexpected response: $response"
+            exit 1
+          fi
