@@ -4,7 +4,6 @@ using BlackList.Domain.Entities;
 using BlackList.Persistence.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 
 public class BlackListServiceDbContext : DbContext
@@ -36,20 +35,9 @@ public class BlackListServiceDbContext : DbContext
 
 public class BlackListServiceContextFactory : IDesignTimeDbContextFactory<BlackListServiceDbContext>
 {
-    private readonly IConfiguration? _configuration;
-
-    public BlackListServiceContextFactory()
-    {
-    }
-
-    public BlackListServiceContextFactory(IConfiguration? configuration)
-    {
-        _configuration = configuration;
-    }
-
     public BlackListServiceDbContext CreateDbContext(string[] args)
     {
-        var connectionString = _configuration!.GetConnectionString("BlackList");
+        var connectionString = args[0];
         var optionsBuilder = new DbContextOptionsBuilder<BlackListServiceDbContext>();
 
         optionsBuilder.UseNpgsql(connectionString);

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    ports: 
+      - "6000:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+  blacklist-service:
+    image: ${DOCKER_REGISTRY-}blacklist-service
+    build:
+      context: .
+      dockerfile: src/BlackList.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;http://+:80
+      - ConnectionStrings__BlackList=Server=db;Port=5432;Database=blackList;UserId=postgres;Password=postgres;
+    ports:
+      - "8080:80"
+    links:
+      - db
