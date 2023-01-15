@@ -6,14 +6,13 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
 COPY ["src/BlackList.Api/BlackList.Api.csproj", "src/BlackList.Api/"]
 COPY ["src/BlackList.Application/BlackList.Application.csproj", "src/BlackList.Application/"]
 COPY ["src/BlackList.Domain/BlackList.Domain.csproj", "src/BlackList.Domain/"]
 COPY ["src/BlackList.Persistence/BlackList.Persistence.csproj", "src/BlackList.Persistence/"]
 RUN dotnet restore "src/BlackList.Api/BlackList.Api.csproj"
 COPY . .
-WORKDIR "/src/BlackList.Api"
+WORKDIR /src/BlackList.Api
 RUN dotnet build "BlackList.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -23,6 +22,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BlackList.Api.dll"]
-
-# Command to deploy to Heroku
-# CMD ASPNETCORE_URLS="http://*:$PORT" dotnet BlackList.Api.dll
