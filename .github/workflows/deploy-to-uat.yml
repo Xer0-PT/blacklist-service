@@ -7,9 +7,6 @@ jobs:
   deploy-to-uat:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      uses: johnbeynon/render-deploy-action
-      with:
-        service-id: ${{ secrets.UAT_SERVICE_ID }}
-        api-key: ${{ secrets.RENDER_API_KEY }}
+      - name: Deploy Hook
+        run: |
+          curl -X POST ${{ secrets.UAT_HOOK }}
