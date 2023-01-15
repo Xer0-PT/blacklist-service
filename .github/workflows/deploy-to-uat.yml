@@ -4,10 +4,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy-to-uat:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Build Service
+        run: |
+        docker-compose -f ./src/BlackList.Api/docker-compose.yml
+
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
