@@ -8,13 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build Service
-        run: |
-          docker-compose -f ./src/BlackList.Api/docker-compose.yml up -d --build
 
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - uses: johnbeynon/render-deploy-action
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "blacklist-faceit-service-uat"
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          usedocker: true
+          service-id: ${{ secrets.UAT_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
