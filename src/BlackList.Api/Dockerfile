@@ -22,4 +22,7 @@ RUN dotnet publish "BlackList.Api.csproj" -c Release -o /app/publish /p:UseAppHo
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BlackList.Api.dll"]
+# ENTRYPOINT ["dotnet", "BlackList.Api.dll"]
+
+# Command to deploy to Heroku
+CMD ASPNETCORE_URLS="http://*:$PORT" dotnet BlackList.Api.dll

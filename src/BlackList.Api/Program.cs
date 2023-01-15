@@ -4,6 +4,7 @@ using BlackList.Application.Services;
 using BlackList.Persistence.Data;
 using BlackList.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +14,22 @@ var connectionString = builder.Configuration.GetConnectionString("BlackList");
 builder.Services.AddSingleton(AddAutoMapperConfig.Initialize());
 
 // Add DbContext
-builder.Services.AddDbContext<BlackListServiceDbContext>(o =>
+builder.Services.AddDbContext<BlackListServiceDbContext>(opt =>
 {
-    o.UseNpgsql(
+    opt.UseNpgsql(
         connectionString,
         options => options.EnableRetryOnFailure());
+    //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+    //{
+    //    //    var m = Regex.Match(Environment.GetEnvironmentVariable("DATABASE_URL")!, @"postgres://(.*):(.*)@(.*):(.*)/(.*)");
+    //    //    opt.UseNpgsql($"Server={m.Groups[3]};Port={m.Groups[4]};User Id={m.Groups[1]};Password={m.Groups[2]};Database={m.Groups[5]};sslmode=Prefer;Trust Server Certificate=true");
+    //}
+    //else
+    //{
+    //    opt.UseNpgsql(
+    //    connectionString,
+    //    options => options.EnableRetryOnFailure());
+    //}
 });
 
 // Add Persistence Services
