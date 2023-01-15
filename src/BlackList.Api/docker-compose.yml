@@ -5,7 +5,9 @@ services:
     image: ${DOCKER_REGISTRY-}blacklist-service
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: src/BlackList.Api/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=uat
       # - ConnectionStrings__BlackList=Server=db;Port=5432;Database=blackList;UserId=postgres;Password=postgres;
+    ports:
+      - "8080:80"

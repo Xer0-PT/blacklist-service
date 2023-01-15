@@ -13,7 +13,7 @@ COPY ["src/BlackList.Domain/BlackList.Domain.csproj", "src/BlackList.Domain/"]
 COPY ["src/BlackList.Persistence/BlackList.Persistence.csproj", "src/BlackList.Persistence/"]
 RUN dotnet restore "src/BlackList.Api/BlackList.Api.csproj"
 COPY . .
-WORKDIR "/src/src/BlackList.Api"
+WORKDIR "/src/BlackList.Api"
 RUN dotnet build "BlackList.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -22,7 +22,7 @@ RUN dotnet publish "BlackList.Api.csproj" -c Release -o /app/publish /p:UseAppHo
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-# ENTRYPOINT ["dotnet", "BlackList.Api.dll"]
+ENTRYPOINT ["dotnet", "BlackList.Api.dll"]
 
 # Command to deploy to Heroku
-CMD ASPNETCORE_URLS="http://*:$PORT" dotnet BlackList.Api.dll
+# CMD ASPNETCORE_URLS="http://*:$PORT" dotnet BlackList.Api.dll
