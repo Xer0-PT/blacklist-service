@@ -65,6 +65,8 @@ app.MapHealthChecks("/api/healthz");
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
 app.UseAuthorization();
 
 app.MapControllers();
