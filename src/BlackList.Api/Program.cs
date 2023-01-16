@@ -47,6 +47,11 @@ builder.Services.AddCors(opt =>
     });
 });
 
+// Add Health Checks
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<BlackListServiceDbContext>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,7 +61,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapHealthChecks("/api/healthz");
+
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
