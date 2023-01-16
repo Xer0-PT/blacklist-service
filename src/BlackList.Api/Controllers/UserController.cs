@@ -5,7 +5,7 @@ using BlackList.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
