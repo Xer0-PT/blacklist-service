@@ -6,7 +6,7 @@ using BlackList.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/api/[controller]")]
 public class BlackListedPlayerController : ControllerBase
 {
     private readonly IBlackListedPlayerService _blackListService;
