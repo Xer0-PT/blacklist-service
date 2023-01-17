@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using BlackList.Api.Extensions;
 using BlackList.Application.Abstractions;
 using BlackList.Application.Services;
@@ -19,6 +20,15 @@ builder.Services.AddDbContext<BlackListServiceDbContext>(opt =>
         connectionString,
         options => options.EnableRetryOnFailure());
 });
+
+// Add rate limiting configuration
+var ipRateLimiting = builder.Configuration.GetSection("IpRateLimiting");
+var ipRateLimitPolicies = builder.Configuration.GetSection("IpRateLimitPolicies");
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(ipRateLimiting);
+builder.Services.Configure<IpRateLimitPolicies>(ipRateLimitPolicies);
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
 // Add Persistence Services
 builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -53,6 +63,8 @@ builder.Services
     .AddDbContextCheck<BlackListServiceDbContext>();
 
 var app = builder.Build();
+
+app.UseIpRateLimiting();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
