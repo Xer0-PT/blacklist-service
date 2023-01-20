@@ -18,9 +18,9 @@ public class UserRepository : IUserRepository
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<User> CreateUserAsync(string token, CancellationToken cancellationToken)
+    public async Task<User> CreateUserAsync(string nickname, Guid userFaceitId, CancellationToken cancellationToken)
     {
-        var user = new User(token, _dateTimeProvider.UtcNow);
+        var user = new User(nickname, userFaceitId, _dateTimeProvider.UtcNow);
 
         _context.User.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
@@ -28,6 +28,6 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<User?> GetUserIdAsync(string token, CancellationToken cancellationToken)
-        => await _context.User.FirstOrDefaultAsync(x => x.Token == token, cancellationToken);
+    //public async Task<User?> GetUserIdAsync(string token, string idFaceIt, long idSteam, CancellationToken cancellationToken)
+    //    => await _context.User.FirstOrDefaultAsync(x => x.Token == token, cancellationToken);
 }

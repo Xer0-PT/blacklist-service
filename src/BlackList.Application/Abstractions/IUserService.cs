@@ -4,5 +4,5 @@ using BlackList.Application.Dtos;
 
 public interface IUserService
 {
-    Task<UserDto> CreateUserAsync(CancellationToken cancellationToken);
+    Task<UserDto> CreateUserAsync(string nickname, CancellationToken cancellationToken);
 }

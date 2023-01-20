@@ -5,6 +5,7 @@ using BlackList.Domain.Entities;
 using BlackList.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,16 +20,18 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(long userId, string nickname, CancellationToken cancellationToken)
+    public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(Guid userFaceitId, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
     {
-        var player = await _context.BlackListedPlayer.FirstOrDefaultAsync(x => x.UserId == userId && x.Nickname == nickname, cancellationToken);
+        var player = await _context.BlackListedPlayer
+            .FirstOrDefaultAsync(x => x.Users
+                .Any(u => u.FaceItId == userFaceitId) && x.Nickname == playerNickname, cancellationToken);
 
         if (player is not null)
         {
             throw new InvalidOperationException();
         }
 
-        var blackListedPlayer = new BlackListedPlayer(userId, nickname, _dateTimeProvider.UtcNow);
+        var blackListedPlayer = new BlackListedPlayer(playerFaceitId, playerNickname, _dateTimeProvider.UtcNow);
 
         _context.BlackListedPlayer.Add(blackListedPlayer);
         await _context.SaveChangesAsync(cancellationToken);
@@ -36,9 +39,9 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         return blackListedPlayer;
     }
 
-    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(long userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(Guid userFaceItId, CancellationToken cancellationToken)
         => await _context.BlackListedPlayer
-        .Where(x => x.UserId == userId)
+        .Where(x => x.Users.Any(u => u.FaceItId == userFaceItId))
         .Distinct()
         .OrderBy(x => x.Nickname)
         .ToListAsync(cancellationToken);

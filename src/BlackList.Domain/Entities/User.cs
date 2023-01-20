@@ -2,13 +2,14 @@
 
 public class User : EntityBase
 {
-    public User(string token, DateTimeOffset createdAt)
+    public User(string nickname, Guid faceItId, DateTimeOffset createdAt)
     {
-        Token = token;
-        BlackListedPlayers = new List<BlackListedPlayer>();
+        FaceItId = faceItId;
+        Nickname = nickname;
         CreatedAt = createdAt;
     }
 
-    public string Token { get; set; } = string.Empty;
+    public Guid FaceItId { get; set; }
+    public string Nickname { get; set; }
     public ICollection<BlackListedPlayer> BlackListedPlayers { get; set; }
 }

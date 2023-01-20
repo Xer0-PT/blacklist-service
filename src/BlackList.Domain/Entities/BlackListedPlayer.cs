@@ -5,14 +5,14 @@ public class BlackListedPlayer : EntityBase
     public BlackListedPlayer()
     {}
 
-    public BlackListedPlayer(long userId, string nickname, DateTimeOffset createdAt)
+    public BlackListedPlayer(Guid faceitId, string nickname,  DateTimeOffset createdAt)
     {
-        UserId = userId;
+        FaceitId = faceitId;
         Nickname = nickname;
         CreatedAt = createdAt;
     }
 
-    public long UserId { get; set; }
-    public string Nickname { get; set; } = string.Empty;
-    public User User { get; set; } = null!;
+    public Guid FaceitId { get; set; }
+    public string Nickname { get; set; } 
+    public ICollection<User> Users { get; set; }
 }
