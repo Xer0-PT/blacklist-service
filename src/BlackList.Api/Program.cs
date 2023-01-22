@@ -5,10 +5,12 @@ using BlackList.Application.Services;
 using BlackList.Persistence.Data;
 using BlackList.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
+using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("BlackList");
+var faceitUri = builder.Configuration.GetValue<string>("FaceitApiConfig:Url");
 
 // Add AutoMapper
 builder.Services.AddSingleton(AddAutoMapperConfig.Initialize());
@@ -38,6 +40,14 @@ builder.Services.AddTransient<IBlackListedPlayerRepository, BlackListedPlayerRep
 builder.Services.AddScoped<IBlackListedPlayerService, BlackListedPlayerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddScoped<IFaceitGateway, FaceitGateway>();
+builder.Services.AddTransient<AuthHeaderHandler>();
+builder.Services.AddRefitClient<IFaceitApi>()
+    .AddHttpMessageHandler<AuthHeaderHandler>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(faceitUri);
+    });
 
 builder.Services.AddControllers();
 
