@@ -22,7 +22,7 @@ public class UserMapping : IEntityTypeConfiguration<User>
             .HasColumnName("id");
 
         builder
-            .Property(x => x.FaceItId)
+            .Property(x => x.FaceitId)
             .HasColumnName("faceitId");
 
         builder

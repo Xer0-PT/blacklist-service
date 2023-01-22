@@ -30,6 +30,11 @@ public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlay
             .HasColumnName("nickName");
 
         builder
+            .Property(x => x.Banned)
+            .HasColumnName("banned")
+            .HasDefaultValue(true);
+
+        builder
             .Property(x => x.CreatedAt)
             .HasColumnName("createdAt");
     }
