@@ -4,6 +4,6 @@ using BlackList.Application.Dtos;
 
 public interface IBlackListedPlayerService
 {
-    Task<BlackListedPlayerDto?> CreateBlackListedPlayerAsync(string token, string nickname, CancellationToken cancellationToken);
-    Task<IReadOnlyList<BlackListedPlayerDto>?> GetAllBlackListedPlayersAsync(string token, CancellationToken cancellationToken);
+    Task<BlackListedPlayerDto?> CreateBlackListedPlayerAsync(Guid userFaceitId,string playerNickname, CancellationToken cancellationToken);
+    Task<IReadOnlyList<BlackListedPlayerDto>?> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken);
 }

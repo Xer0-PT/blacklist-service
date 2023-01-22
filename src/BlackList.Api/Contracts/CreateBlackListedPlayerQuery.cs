@@ -4,15 +4,16 @@ using System.ComponentModel.DataAnnotations;
 
 public class CreateBlackListedPlayerQuery
 {
-    public CreateBlackListedPlayerQuery(string nickname, string token)
+    public CreateBlackListedPlayerQuery(string nickname, Guid userFaceitId)
     {
         Nickname = nickname;
-        Token = token;
+        UserFaceitId = userFaceitId;
+
     }
 
     [Required]
     public string Nickname { get; set; }
-    
+
     [Required]
-    public string Token { get; set; }
+    public Guid UserFaceitId { get; set;}
 }

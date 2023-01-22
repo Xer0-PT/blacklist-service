@@ -13,22 +13,27 @@ public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlay
         builder.HasKey(x => x.Id);
 
         builder
-            .HasOne(x => x.User)
+            .HasMany(x => x.Users)
             .WithMany(y => y.BlackListedPlayers)
-            .HasForeignKey(x => x.UserId);
+            .UsingEntity(x => x.ToTable("userBlackListedPlayer"));
 
         builder
             .Property(x => x.Id)
             .HasColumnName("id");
 
         builder
-            .Property(x => x.UserId)
-            .HasColumnName("userId");
+            .Property(x => x.FaceitId)
+            .HasColumnName("faceitId");
 
         builder
             .Property(x => x.Nickname)
             .HasColumnName("nickName");
-        
+
+        builder
+            .Property(x => x.Banned)
+            .HasColumnName("banned")
+            .HasDefaultValue(true);
+
         builder
             .Property(x => x.CreatedAt)
             .HasColumnName("createdAt");

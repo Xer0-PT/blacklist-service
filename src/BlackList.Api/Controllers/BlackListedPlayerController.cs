@@ -17,9 +17,9 @@ public class BlackListedPlayerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<BlackListedPlayerDto>>> GetAll(string token, CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<BlackListedPlayerDto>>> GetAll(Guid userFaceitId, CancellationToken cancellationToken)
     {
-        var list = await _blackListService.GetAllBlackListedPlayersAsync(token, cancellationToken);
+        var list = await _blackListService.GetAllBlackListedPlayersAsync(userFaceitId, cancellationToken);
 
         if (list is null)
         {
@@ -34,7 +34,8 @@ public class BlackListedPlayerController : ControllerBase
     {
         try
         {
-            var player = await _blackListService.CreateBlackListedPlayerAsync(query.Token, query.Nickname, cancellationToken);
+            //TODO review this methon
+            var player = await _blackListService.CreateBlackListedPlayerAsync(query.UserFaceitId, query.Nickname, cancellationToken);
 
             if (player is null)
             {

@@ -35,7 +35,6 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IBlackListedPlayerRepository, BlackListedPlayerRepository>();
 
 // Add services to the container
-builder.Services.AddSingleton<Random>();
 builder.Services.AddScoped<IBlackListedPlayerService, BlackListedPlayerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();

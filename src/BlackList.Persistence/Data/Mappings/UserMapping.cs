@@ -12,17 +12,22 @@ public class UserMapping : IEntityTypeConfiguration<User>
 
         builder.HasKey(x => x.Id);
 
-        builder.HasMany(x => x.BlackListedPlayers)
-            .WithOne(y => y.User)
-            .HasForeignKey(y => y.UserId);
+        builder
+            .HasMany(x => x.BlackListedPlayers)
+            .WithMany(y => y.Users)
+            .UsingEntity(x => x.ToTable("userBlackListedPlayer"));
 
         builder
             .Property(x => x.Id)
             .HasColumnName("id");
-        
+
         builder
-            .Property(x => x.Token)
-            .HasColumnName("token");
+            .Property(x => x.FaceitId)
+            .HasColumnName("faceitId");
+
+        builder
+            .Property(x => x.Nickname)
+            .HasColumnName("nickname");
 
         builder
             .Property(x => x.CreatedAt)

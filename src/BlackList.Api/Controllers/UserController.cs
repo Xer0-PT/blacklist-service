@@ -16,10 +16,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserDto>> CreateUser(CancellationToken cancellationToken)
+    public async Task<ActionResult<UserDto>> CreateUser(string nickname, CancellationToken cancellationToken)
     {
-        var token = await _userService.CreateUserAsync(cancellationToken);
+        var user = await _userService.CreateUserAsync(nickname, cancellationToken);
 
-        return Ok(token);
+        return Ok(user);
     }
 }
