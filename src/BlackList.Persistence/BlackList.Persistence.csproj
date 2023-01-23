@@ -19,15 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Migrations\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Migrations\**" />
+    <Folder Include="Migrations" />
   </ItemGroup>
 
 </Project>

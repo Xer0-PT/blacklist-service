@@ -31,6 +31,10 @@ namespace BlackList.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<bool>("Banned")
+                        .HasColumnType("boolean")
+                        .HasColumnName("banned");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
@@ -44,7 +48,12 @@ namespace BlackList.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("nickName");
 
+                    b.Property<long>("userId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("blackListedPlayer", (string)null);
                 });
@@ -62,7 +71,7 @@ namespace BlackList.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
-                    b.Property<Guid>("FaceItId")
+                    b.Property<Guid>("FaceitId")
                         .HasColumnType("uuid")
                         .HasColumnName("faceitId");
 
@@ -76,34 +85,20 @@ namespace BlackList.Persistence.Migrations
                     b.ToTable("user", (string)null);
                 });
 
-            modelBuilder.Entity("BlackListedPlayerUser", b =>
+            modelBuilder.Entity("BlackList.Domain.Entities.BlackListedPlayer", b =>
                 {
-                    b.Property<long>("BlackListedPlayersId")
-                        .HasColumnType("bigint");
+                    b.HasOne("BlackList.Domain.Entities.User", "User")
+                        .WithMany("BlackListedPlayers")
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<long>("UsersId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("BlackListedPlayersId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("userBlackListedPlayer", (string)null);
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BlackListedPlayerUser", b =>
+            modelBuilder.Entity("BlackList.Domain.Entities.User", b =>
                 {
-                    b.HasOne("BlackList.Domain.Entities.BlackListedPlayer", null)
-                        .WithMany()
-                        .HasForeignKey("BlackListedPlayersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BlackList.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("BlackListedPlayers");
                 });
 #pragma warning restore 612, 618
         }

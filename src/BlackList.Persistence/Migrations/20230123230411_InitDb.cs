@@ -13,21 +13,6 @@ namespace BlackList.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "blackListedPlayer",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    faceitId = table.Column<Guid>(type: "uuid", nullable: false),
-                    nickName = table.Column<string>(type: "text", nullable: false),
-                    createdAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_blackListedPlayer", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "user",
                 columns: table => new
                 {
@@ -43,41 +28,37 @@ namespace BlackList.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "userBlackListedPlayer",
+                name: "blackListedPlayer",
                 columns: table => new
                 {
-                    BlackListedPlayersId = table.Column<long>(type: "bigint", nullable: false),
-                    UsersId = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    banned = table.Column<bool>(type: "boolean", nullable: false),
+                    userId = table.Column<long>(type: "bigint", nullable: false),
+                    faceitId = table.Column<Guid>(type: "uuid", nullable: false),
+                    nickName = table.Column<string>(type: "text", nullable: false),
+                    createdAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_userBlackListedPlayer", x => new { x.BlackListedPlayersId, x.UsersId });
+                    table.PrimaryKey("PK_blackListedPlayer", x => x.id);
                     table.ForeignKey(
-                        name: "FK_userBlackListedPlayer_blackListedPlayer_BlackListedPlayersId",
-                        column: x => x.BlackListedPlayersId,
-                        principalTable: "blackListedPlayer",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_userBlackListedPlayer_user_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_blackListedPlayer_user_userId",
+                        column: x => x.userId,
                         principalTable: "user",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_userBlackListedPlayer_UsersId",
-                table: "userBlackListedPlayer",
-                column: "UsersId");
+                name: "IX_blackListedPlayer_userId",
+                table: "blackListedPlayer",
+                column: "userId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "userBlackListedPlayer");
-
             migrationBuilder.DropTable(
                 name: "blackListedPlayer");
 
