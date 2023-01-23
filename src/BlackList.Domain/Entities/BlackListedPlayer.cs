@@ -13,5 +13,5 @@ public class BlackListedPlayer : EntityBase
     }
 
     public bool Banned { get; set; } = true;
-    public ICollection<User> Users { get; set; }
+    public User User { get; set; }
 }

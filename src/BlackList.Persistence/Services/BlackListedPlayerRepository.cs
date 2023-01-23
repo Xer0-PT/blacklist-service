@@ -23,8 +23,7 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
     public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(Guid userFaceitId, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
     {
         var player = await _context.BlackListedPlayer
-            .FirstOrDefaultAsync(x => x.Users
-                .Any(u => u.FaceitId == userFaceitId) && x.Nickname == playerNickname, cancellationToken);
+            .FirstOrDefaultAsync(x => x.User.FaceitId == userFaceitId && x.Nickname == playerNickname, cancellationToken);
 
         if (player is not null)
         {
@@ -41,7 +40,7 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
 
     public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(Guid userFaceItId, CancellationToken cancellationToken)
         => await _context.BlackListedPlayer
-        .Where(x => x.Users.Any(u => u.FaceitId == userFaceItId))
+        .Where(x => x.User.FaceitId == userFaceItId)
         .Distinct()
         .OrderBy(x => x.Nickname)
         .ToListAsync(cancellationToken);
