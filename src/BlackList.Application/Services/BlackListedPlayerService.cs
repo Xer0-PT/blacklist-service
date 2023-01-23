@@ -4,6 +4,7 @@ using AutoMapper;
 using BlackList.Application.Abstractions;
 using BlackList.Application.Dtos;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +21,6 @@ public class BlackListedPlayerService : IBlackListedPlayerService
         _mapper = mapper;
         _userRepository = userRepository;
     }
-
     public async Task<BlackListedPlayerDto?> CreateBlackListedPlayerAsync(Guid userFaceitId, string playerNickname, CancellationToken cancellationToken)
     {
         //TODO -> Refactor GetUserIdAsync 
@@ -36,10 +36,9 @@ public class BlackListedPlayerService : IBlackListedPlayerService
         Guid playerFaceItId = default;
 
         var player = await _repository.CreateBlackListedPlayerAsync(userFaceitId, playerFaceItId, playerNickname, cancellationToken);
-        
+
         return _mapper.Map<BlackListedPlayerDto>(player);
     }
-
     public async Task<IReadOnlyList<BlackListedPlayerDto>?> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken)
     {
         //TODO -> refactor GetUserIdAsync
@@ -53,5 +52,9 @@ public class BlackListedPlayerService : IBlackListedPlayerService
         var list = await _repository.GetAllBlackListedPlayersAsync(userFaceitId, cancellationToken);
 
         return _mapper.Map<IReadOnlyList<BlackListedPlayerDto>>(list);
+    }
+    public async Task<BlackListedPlayerDto> UndoPlayer(Guid userFaceitId, string playerNickname, CancellationToken cancellationToken)
+    {
+        return null;
     }
 }

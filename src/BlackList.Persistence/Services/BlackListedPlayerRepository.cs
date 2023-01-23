@@ -1,6 +1,7 @@
 ﻿namespace BlackList.Persistence.Services;
 
 using BlackList.Application.Abstractions;
+using BlackList.Application.Dtos;
 using BlackList.Domain.Entities;
 using BlackList.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
@@ -39,10 +40,15 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         return blackListedPlayer;
     }
 
-    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(Guid userFaceItId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken)
         => await _context.BlackListedPlayer
-        .Where(x => x.Users.Any(u => u.FaceitId == userFaceItId))
+        .Where(x => x.Users.Any(u => u.FaceitId == userFaceitId))
         .Distinct()
         .OrderBy(x => x.Nickname)
         .ToListAsync(cancellationToken);
+
+    public async Task<BlackListedPlayerDto?> UndoPlayer(string playerNickname, Guid userFaceitId, CancellationToken cancellationToken)
+    {
+        return null;
+    }
 }
