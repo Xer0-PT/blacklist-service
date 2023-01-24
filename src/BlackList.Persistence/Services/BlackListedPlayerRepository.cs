@@ -1,13 +1,9 @@
-﻿namespace BlackList.Persistence.Services;
-
-using BlackList.Application.Abstractions;
+﻿using BlackList.Application.Abstractions;
 using BlackList.Domain.Entities;
 using BlackList.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
+namespace BlackList.Persistence.Services;
 
 public class BlackListedPlayerRepository : IBlackListedPlayerRepository
 {
@@ -20,17 +16,17 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(long userId, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
+    public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(User user, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
     {
         var player = await _context.BlackListedPlayer
-            .FirstOrDefaultAsync(x => x.User.Id == userId && x.Nickname == playerNickname, cancellationToken);
+            .FirstOrDefaultAsync(x => x.User.Id == user.Id && x.Nickname == playerNickname, cancellationToken);
 
         if (player is not null)
         {
             throw new InvalidOperationException("This user already has this player blacklisted!");
         }
 
-        var blackListedPlayer = new BlackListedPlayer(playerFaceitId, playerNickname, _dateTimeProvider.UtcNow);
+        var blackListedPlayer = new BlackListedPlayer(user, playerFaceitId, playerNickname, _dateTimeProvider.UtcNow);
 
         _context.BlackListedPlayer.Add(blackListedPlayer);
         await _context.SaveChangesAsync(cancellationToken);

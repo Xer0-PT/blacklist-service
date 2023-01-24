@@ -30,7 +30,7 @@ public class BlackListedPlayerService : IBlackListedPlayerService
 
         var playerFaceItId = await _faceitGateway.GetFaceitIdAsync(playerNickname, cancellationToken);
 
-        var player = await _repository.CreateBlackListedPlayerAsync(user.Id, playerFaceItId, playerNickname, cancellationToken);
+        var player = await _repository.CreateBlackListedPlayerAsync(user, playerFaceItId, playerNickname, cancellationToken);
 
         return _mapper.Map<BlackListedPlayerDto>(player);
     }
@@ -45,6 +45,6 @@ public class BlackListedPlayerService : IBlackListedPlayerService
     }
 
     private async Task<User> GetUserAsync(Guid userFaceitId, CancellationToken cancellationToken)
-        => await _userRepository.GetUserAsync(userFaceitId, cancellationToken) ?? throw new ArgumentNullException("There is no user with requested token!");
+        => await _userRepository.GetUserAsync(userFaceitId, cancellationToken) ?? throw new ArgumentNullException(nameof(User), "This user does not exist!");
 
 }

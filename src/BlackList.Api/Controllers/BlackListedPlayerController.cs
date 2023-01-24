@@ -36,7 +36,7 @@ public class BlackListedPlayerController : ControllerBase
     {
         try
         {
-            var player = await _blackListService.CreateBlackListedPlayerAsync(query.UserFaceitId, query.Nickname, cancellationToken);
+            var player = await _blackListService.CreateBlackListedPlayerAsync(query.UserFaceitId, query.PlayerNickname, cancellationToken);
 
             return Ok(player);
         }

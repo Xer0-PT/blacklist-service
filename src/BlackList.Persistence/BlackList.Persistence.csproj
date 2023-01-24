@@ -18,4 +18,8 @@
     <ProjectReference Include="..\BlackList.Application\BlackList.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations" />
+  </ItemGroup>
+
 </Project>
