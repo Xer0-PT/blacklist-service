@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlackList.Persistence.Migrations
 {
     [DbContext(typeof(BlackListServiceDbContext))]
-    [Migration("20230123230411_InitDb")]
+    [Migration("20230124214202_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />

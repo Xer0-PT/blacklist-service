@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 public interface IUserRepository
 {
     Task<User> CreateUserAsync(string nickname,Guid userFaceitId, CancellationToken cancellationToken);
-    //Task<User?> GetUserIdAsync(string token, string idFaceIt, long idSteam, CancellationToken cancellationToken);
+    Task<User?> GetUserAsync(Guid faceitId, CancellationToken cancellationToken);
 }
