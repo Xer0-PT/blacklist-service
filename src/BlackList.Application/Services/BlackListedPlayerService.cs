@@ -1,13 +1,9 @@
-﻿namespace BlackList.Application.Services;
-
-using AutoMapper;
+﻿using AutoMapper;
 using BlackList.Application.Abstractions;
 using BlackList.Application.Dtos;
 using BlackList.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
+namespace BlackList.Application.Services;
 
 public class BlackListedPlayerService : IBlackListedPlayerService
 {
@@ -29,13 +25,15 @@ public class BlackListedPlayerService : IBlackListedPlayerService
         var user = await GetUserAsync(userFaceitId, cancellationToken);
 
         var playerFaceItId = await _faceitGateway.GetFaceitIdAsync(playerNickname, cancellationToken);
+        
+        CheckIfUserIsBanningHimself(playerNickname, user, playerFaceItId);
 
         var player = await _repository.CreateBlackListedPlayerAsync(user, playerFaceItId, playerNickname, cancellationToken);
 
         return _mapper.Map<BlackListedPlayerDto>(player);
     }
 
-    public async Task<IReadOnlyList<BlackListedPlayerDto>?> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<BlackListedPlayerDto>> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken)
     {
         var user = await GetUserAsync(userFaceitId, cancellationToken);
 
@@ -43,8 +41,15 @@ public class BlackListedPlayerService : IBlackListedPlayerService
 
         return _mapper.Map<IReadOnlyList<BlackListedPlayerDto>>(list);
     }
+    
+    private static void CheckIfUserIsBanningHimself(string playerNickname, EntityBase user, Guid playerFaceItId)
+    {
+        if (user.Nickname.Equals(playerNickname, StringComparison.OrdinalIgnoreCase) || user.FaceitId == playerFaceItId)
+        {
+            throw new InvalidOperationException("You cannot ban yourself!");
+        }
+    }
 
     private async Task<User> GetUserAsync(Guid userFaceitId, CancellationToken cancellationToken)
         => await _userRepository.GetUserAsync(userFaceitId, cancellationToken) ?? throw new ArgumentNullException(nameof(User), "This user does not exist!");
-
 }
