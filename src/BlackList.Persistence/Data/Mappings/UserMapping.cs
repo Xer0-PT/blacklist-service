@@ -14,8 +14,7 @@ public class UserMapping : IEntityTypeConfiguration<User>
 
         builder
             .HasMany(x => x.BlackListedPlayers)
-            .WithMany(y => y.Users)
-            .UsingEntity(x => x.ToTable("userBlackListedPlayer"));
+            .WithOne(y => y.User);
 
         builder
             .Property(x => x.Id)

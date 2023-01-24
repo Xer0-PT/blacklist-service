@@ -13,9 +13,10 @@ public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlay
         builder.HasKey(x => x.Id);
 
         builder
-            .HasMany(x => x.Users)
+            .HasOne(x => x.User)
             .WithMany(y => y.BlackListedPlayers)
-            .UsingEntity(x => x.ToTable("userBlackListedPlayer"));
+            .HasForeignKey("userId");
+            //.HasConstraintName("userId");
 
         builder
             .Property(x => x.Id)
@@ -31,8 +32,7 @@ public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlay
 
         builder
             .Property(x => x.Banned)
-            .HasColumnName("banned")
-            .HasDefaultValue(true);
+            .HasColumnName("banned");
 
         builder
             .Property(x => x.CreatedAt)

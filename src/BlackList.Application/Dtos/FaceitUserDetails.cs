@@ -5,5 +5,5 @@ namespace BlackList.Application.Dtos;
 public class FaceitUserDetails
 {
     [JsonPropertyName("player_id")]
-    public Guid PlayerId => default;
+    public Guid PlayerId { get; set; }
 }

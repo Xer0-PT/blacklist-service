@@ -1,7 +1,7 @@
 ﻿namespace BlackList.Application.Services;
 
-using AutoMapper;
 using Abstractions;
+using AutoMapper;
 using Dtos;
 using System.Threading.Tasks;
 
@@ -20,8 +20,16 @@ public class UserService : IUserService
 
     public async Task<UserDto> CreateUserAsync(string nickname, CancellationToken cancellationToken)
     {
-        var userId = await _faceitGateway.GetFaceitIdAsync(nickname, cancellationToken);
-        var user = await _repository.CreateUserAsync(nickname, userId, cancellationToken);
+        var userFaceitId = await _faceitGateway.GetFaceitIdAsync(nickname, cancellationToken);
+
+        var user = await _repository.GetUserAsync(userFaceitId, cancellationToken);
+
+        if (user is not null)
+        {
+            throw new InvalidOperationException("This user already exists!");
+        }
+
+        user = await _repository.CreateUserAsync(nickname, userFaceitId, cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

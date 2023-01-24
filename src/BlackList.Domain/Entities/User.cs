@@ -7,6 +7,7 @@ public class User : EntityBase
         FaceitId = faceitId;
         Nickname = nickname;
         CreatedAt = createdAt;
+        BlackListedPlayers = new List<BlackListedPlayer>();
     }
     public ICollection<BlackListedPlayer> BlackListedPlayers { get; set; }
 }
