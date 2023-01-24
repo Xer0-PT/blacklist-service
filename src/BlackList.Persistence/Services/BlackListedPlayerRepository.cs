@@ -20,14 +20,14 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(Guid userFaceitId, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
+    public async Task<BlackListedPlayer> CreateBlackListedPlayerAsync(long userId, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
     {
         var player = await _context.BlackListedPlayer
-            .FirstOrDefaultAsync(x => x.User.FaceitId == userFaceitId && x.Nickname == playerNickname, cancellationToken);
+            .FirstOrDefaultAsync(x => x.User.Id == userId && x.Nickname == playerNickname, cancellationToken);
 
         if (player is not null)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("This user already has this player blacklisted!");
         }
 
         var blackListedPlayer = new BlackListedPlayer(playerFaceitId, playerNickname, _dateTimeProvider.UtcNow);
@@ -38,9 +38,9 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         return blackListedPlayer;
     }
 
-    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(Guid userFaceItId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(long userId, CancellationToken cancellationToken)
         => await _context.BlackListedPlayer
-        .Where(x => x.User.FaceitId == userFaceItId)
+        .Where(x => x.User.Id == userId)
         .Distinct()
         .OrderBy(x => x.Nickname)
         .ToListAsync(cancellationToken);

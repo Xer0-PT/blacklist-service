@@ -19,14 +19,16 @@ public class BlackListedPlayerController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<BlackListedPlayerDto>>> GetAll(Guid userFaceitId, CancellationToken cancellationToken)
     {
-        var list = await _blackListService.GetAllBlackListedPlayersAsync(userFaceitId, cancellationToken);
-
-        if (list is null)
+        try
         {
-            return NotFound("There is no user with requested token!");
-        }
+            var list = await _blackListService.GetAllBlackListedPlayersAsync(userFaceitId, cancellationToken);
 
-        return Ok(list);
+            return Ok(list);
+        }
+        catch(ArgumentNullException ex) 
+        { 
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPost]
@@ -34,19 +36,17 @@ public class BlackListedPlayerController : ControllerBase
     {
         try
         {
-            //TODO review this methon
             var player = await _blackListService.CreateBlackListedPlayerAsync(query.UserFaceitId, query.Nickname, cancellationToken);
-
-            if (player is null)
-            {
-                return NotFound("There is no user with requested token!");
-            }
 
             return Ok(player);
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            return BadRequest("This user already has this player blacklisted!");
+            return BadRequest(ex.Message);
+        }
+        catch(ArgumentNullException ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 }

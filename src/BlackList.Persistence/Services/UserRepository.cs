@@ -28,6 +28,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    //public async Task<User?> GetUserIdAsync(string token, string idFaceIt, long idSteam, CancellationToken cancellationToken)
-    //    => await _context.User.FirstOrDefaultAsync(x => x.Token == token, cancellationToken);
+    public async Task<User?> GetUserAsync(Guid faceitId, CancellationToken cancellationToken)
+        => await _context.User
+        .FirstOrDefaultAsync(x => x.FaceitId == faceitId, cancellationToken);
 }

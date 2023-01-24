@@ -18,8 +18,17 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser(string nickname, CancellationToken cancellationToken)
     {
-        var user = await _userService.CreateUserAsync(nickname, cancellationToken);
+        try
+        {
+            var user = await _userService.CreateUserAsync(nickname, cancellationToken);
 
-        return Ok(user);
+            return Ok(user);
+        }
+        catch (InvalidOperationException ex)
+        {
+
+            return BadRequest(ex.Message);
+
+        }
     }
 }

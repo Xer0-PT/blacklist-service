@@ -16,6 +16,7 @@ public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlay
             .HasOne(x => x.User)
             .WithMany(y => y.BlackListedPlayers)
             .HasForeignKey("userId");
+            //.HasConstraintName("userId");
 
         builder
             .Property(x => x.Id)
