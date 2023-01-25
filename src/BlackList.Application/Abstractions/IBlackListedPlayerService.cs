@@ -1,10 +1,10 @@
 ﻿namespace BlackList.Application.Abstractions;
 
-using BlackList.Application.Dtos;
+using Dtos;
 
 public interface IBlackListedPlayerService
 {
+    Task<IReadOnlyList<BlackListedPlayerDto>> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken);
     Task<BlackListedPlayerDto> CreateBlackListedPlayerAsync(Guid userFaceitId, string playerNickname, CancellationToken cancellationToken);
-    Task<IReadOnlyList<BlackListedPlayerDto>?> GetAllBlackListedPlayersAsync(Guid userFaceitId, CancellationToken cancellationToken);
     Task<BlackListedPlayerDto> UndoPlayerBanAsync(Guid userFaceitId, string playerNickname, CancellationToken cancellationToken);
 }

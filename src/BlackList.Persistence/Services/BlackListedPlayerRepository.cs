@@ -34,7 +34,7 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
         return blackListedPlayer;
     }
 
-    public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(long userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<BlackListedPlayer>> GetAllBlackListedPlayersAsync(long userId, CancellationToken cancellationToken)
         => await _context.BlackListedPlayer
         .Where(x => x.User.Id == userId && x.Banned == true)
         .Distinct()
