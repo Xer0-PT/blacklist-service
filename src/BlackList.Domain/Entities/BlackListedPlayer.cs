@@ -20,4 +20,9 @@ public class BlackListedPlayer : EntityBase
     {
         Banned = false;
     }
+
+    public void Ban()
+    {
+        Banned = true;
+    }
 }
