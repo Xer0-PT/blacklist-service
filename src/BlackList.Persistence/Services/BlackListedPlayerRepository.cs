@@ -36,8 +36,19 @@ public class BlackListedPlayerRepository : IBlackListedPlayerRepository
 
     public async Task<IReadOnlyList<BlackListedPlayer>?> GetAllBlackListedPlayersAsync(long userId, CancellationToken cancellationToken)
         => await _context.BlackListedPlayer
-        .Where(x => x.User.Id == userId)
+        .Where(x => x.User.Id == userId && x.Banned == true)
         .Distinct()
         .OrderBy(x => x.Nickname)
         .ToListAsync(cancellationToken);
+
+    public async Task<BlackListedPlayer?> GetBlackListedPlayerAsync(string playerNickname, long userId, CancellationToken cancellationToken)
+        => await _context.BlackListedPlayer
+            .Where(x => EF.Functions.ILike(x.Nickname, playerNickname) && x.User.Id == userId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task SaveChangesAsync(BlackListedPlayer player, CancellationToken cancellationToken)
+    {
+        _context.BlackListedPlayer.Update(player);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 }
