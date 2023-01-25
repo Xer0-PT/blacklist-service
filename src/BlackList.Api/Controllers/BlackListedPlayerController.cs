@@ -49,4 +49,17 @@ public class BlackListedPlayerController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+    [HttpPut]
+    public async Task<ActionResult<BlackListedPlayerDto>> Update(UpdateBlackListedPlayerQuery query, CancellationToken cancellationToken) 
+    {
+        try 
+        {
+            var player = await _blackListService.UndoPlayerBanAsync(query.UserFaceitId, query.PlayerNickname, cancellationToken);
+            return Ok(player);
+        }
+        catch (ArgumentNullException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

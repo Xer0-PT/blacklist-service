@@ -3,7 +3,7 @@
 public class BlackListedPlayer : EntityBase
 {
     public BlackListedPlayer()
-    {}
+    { }
 
     public BlackListedPlayer(User user, Guid faceitId, string nickname, DateTimeOffset createdAt)
     {
@@ -15,4 +15,9 @@ public class BlackListedPlayer : EntityBase
 
     public bool Banned { get; set; } = true;
     public User User { get; set; } = null!;
+
+    public void UndoBan()
+    {
+        Banned = false;
+    }
 }
