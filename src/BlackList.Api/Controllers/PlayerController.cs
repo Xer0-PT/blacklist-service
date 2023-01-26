@@ -17,7 +17,7 @@ public class PlayerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<PlayerDto>>> GetAll(Guid userFaceitId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<PlayerDto>>> GetAll([FromQuery] Guid userFaceitId, CancellationToken cancellationToken)
     {
         try
         {
@@ -32,7 +32,7 @@ public class PlayerController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<PlayerDto>> Create(CreatePlayerQuery query, CancellationToken cancellationToken)
+    public async Task<ActionResult<PlayerDto>> Create([FromBody] CreatePlayerQuery query, CancellationToken cancellationToken)
     {
         try
         {
@@ -50,7 +50,7 @@ public class PlayerController : ControllerBase
         }
     }
     [HttpPut]
-    public async Task<ActionResult<PlayerDto>> Update(UpdatePlayerQuery query, CancellationToken cancellationToken) 
+    public async Task<ActionResult<PlayerDto>> Update([FromBody] UpdatePlayerQuery query, CancellationToken cancellationToken) 
     {
         try 
         {

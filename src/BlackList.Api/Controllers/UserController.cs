@@ -16,7 +16,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserDto>> CreateUser(string nickname, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserDto>> CreateUser([FromBody] string nickname, CancellationToken cancellationToken)
     {
         try
         {
