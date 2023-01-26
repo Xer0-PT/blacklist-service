@@ -18,6 +18,6 @@ public static class PersistenceExtensions
                 options => options.EnableRetryOnFailure());
         });
         services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IBlackListedPlayerRepository, BlackListedPlayerRepository>();
+        services.AddTransient<IPlayerRepository, PlayerRepository>();
     }
 }

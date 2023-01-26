@@ -1,10 +1,10 @@
-﻿namespace BlackList.Persistence.Data;
-
+﻿using System.Diagnostics;
 using BlackList.Domain.Entities;
 using BlackList.Persistence.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System.Diagnostics;
+
+namespace BlackList.Persistence.Data;
 
 public class BlackListServiceDbContext : DbContext
 {
@@ -12,7 +12,7 @@ public class BlackListServiceDbContext : DbContext
     {
     }
 
-    public DbSet<BlackListedPlayer> BlackListedPlayer { get; set; }
+    public DbSet<Player> Player { get; set; }
     public DbSet<User> User { get; set; }
 
 #if DEBUG
@@ -27,7 +27,7 @@ public class BlackListServiceDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new BlackListedPlayerMapping());
+        modelBuilder.ApplyConfiguration(new PlayerMapping());
         modelBuilder.ApplyConfiguration(new UserMapping());
         modelBuilder.Ignore<EntityBase>();
     }

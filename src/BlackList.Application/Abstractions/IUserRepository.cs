@@ -1,6 +1,6 @@
 ﻿namespace BlackList.Application.Abstractions;
 
-using BlackList.Domain.Entities;
+using Domain.Entities;
 using System.Threading.Tasks;
 
 public interface IUserRepository

@@ -2,12 +2,12 @@
 
 namespace BlackList.Application.Extensions;
 
-public static class BlackListedPlayerExtensions
+public static class PlayerExtensions
 {
-    public static bool PlayerIsAlreadyBanned(BlackListedPlayer? player)
+    public static bool PlayerIsAlreadyBanned(Player? player)
         => player is not null && player.Banned;
 
-    public static bool IsReban(BlackListedPlayer? player)
+    public static bool IsReban(Player? player)
         => player is not null && !player.Banned;
 
     public static bool UserIsBanningHimself(string playerNickname, string userNickname)

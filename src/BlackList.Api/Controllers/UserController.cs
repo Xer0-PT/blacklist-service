@@ -1,8 +1,8 @@
-namespace BlackList.Api.Controllers;
-
 using BlackList.Application.Abstractions;
 using BlackList.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
+
+namespace BlackList.Api.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]

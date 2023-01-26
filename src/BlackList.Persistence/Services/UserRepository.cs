@@ -1,11 +1,9 @@
-﻿namespace BlackList.Persistence.Services;
-
-using BlackList.Application.Abstractions;
+﻿using BlackList.Application.Abstractions;
 using BlackList.Domain.Entities;
 using BlackList.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
-using System.Threading.Tasks;
+
+namespace BlackList.Persistence.Services;
 
 public class UserRepository : IUserRepository
 {

@@ -9,7 +9,7 @@ public static class ApplicationServicesExtensions
     public static void AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
     {
         var faceitUri = configuration.GetValue<string>("FaceitApiConfig:Url");
-        services.AddScoped<IBlackListedPlayerService, BlackListedPlayerService>();
+        services.AddScoped<IPlayerService, PlayerService>();
         services.AddScoped<IUserService, UserService>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IFaceitGateway, FaceitGateway>();

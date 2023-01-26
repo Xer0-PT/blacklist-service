@@ -1,11 +1,11 @@
 ﻿namespace BlackList.Domain.Entities;
 
-public class BlackListedPlayer : EntityBase
+public class Player : EntityBase
 {
-    public BlackListedPlayer()
+    public Player()
     { }
 
-    public BlackListedPlayer(User user, Guid faceitId, string nickname, DateTimeOffset createdAt)
+    public Player(User user, Guid faceitId, string nickname, DateTimeOffset createdAt)
     {
         User = user;
         FaceitId = faceitId;
