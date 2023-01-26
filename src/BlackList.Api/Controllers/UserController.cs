@@ -26,9 +26,7 @@ public class UserController : ControllerBase
         }
         catch (ArgumentNullException ex)
         {
-
             return NotFound(ex.Message);
-
         }
     }
 }
