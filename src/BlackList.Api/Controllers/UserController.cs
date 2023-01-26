@@ -24,11 +24,9 @@ public class UserController : ControllerBase
 
             return Ok(user);
         }
-        catch (InvalidOperationException ex)
+        catch (ArgumentNullException ex)
         {
-
-            return BadRequest(ex.Message);
-
+            return NotFound(ex.Message);
         }
     }
 }
