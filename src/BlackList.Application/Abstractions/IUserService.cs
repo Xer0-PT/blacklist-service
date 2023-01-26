@@ -1,6 +1,6 @@
 ﻿namespace BlackList.Application.Abstractions;
 
-using BlackList.Application.Dtos;
+using Dtos;
 
 public interface IUserService
 {

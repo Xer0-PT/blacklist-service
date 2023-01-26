@@ -1,7 +1,7 @@
-﻿namespace BlackList.Api.Extensions;
-
-using AutoMapper;
+﻿using AutoMapper;
 using BlackList.Application.Mappings;
+
+namespace BlackList.Api.Extensions;
 
 public static class AddAutoMapperConfig
 {
@@ -9,7 +9,7 @@ public static class AddAutoMapperConfig
     {
         var config = new MapperConfiguration(c =>
         {
-            c.AddProfile(new BlackListedPlayerMapper());
+            c.AddProfile(new PlayerMapper());
             c.AddProfile(new UserMapper());
         });
 

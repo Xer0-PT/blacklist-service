@@ -1,22 +1,21 @@
-﻿namespace BlackList.Persistence.Data.Mappings;
-
-using BlackList.Domain.Entities;
+﻿using BlackList.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class BlackListedPlayerMapping : IEntityTypeConfiguration<BlackListedPlayer>
+namespace BlackList.Persistence.Data.Mappings;
+
+public class PlayerMapping : IEntityTypeConfiguration<Player>
 {
-    public void Configure(EntityTypeBuilder<BlackListedPlayer> builder)
+    public void Configure(EntityTypeBuilder<Player> builder)
     {
-        builder.ToTable("blackListedPlayer");
+        builder.ToTable("player");
 
         builder.HasKey(x => x.Id);
 
         builder
             .HasOne(x => x.User)
-            .WithMany(y => y.BlackListedPlayers)
+            .WithMany(y => y.Players)
             .HasForeignKey("userId");
-            //.HasConstraintName("userId");
 
         builder
             .Property(x => x.Id)

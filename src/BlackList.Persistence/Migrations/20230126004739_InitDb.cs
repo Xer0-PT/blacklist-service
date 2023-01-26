@@ -28,7 +28,7 @@ namespace BlackList.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "blackListedPlayer",
+                name: "player",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
@@ -41,9 +41,9 @@ namespace BlackList.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_blackListedPlayer", x => x.id);
+                    table.PrimaryKey("PK_player", x => x.id);
                     table.ForeignKey(
-                        name: "FK_blackListedPlayer_user_userId",
+                        name: "FK_player_user_userId",
                         column: x => x.userId,
                         principalTable: "user",
                         principalColumn: "id",
@@ -51,8 +51,8 @@ namespace BlackList.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_blackListedPlayer_userId",
-                table: "blackListedPlayer",
+                name: "IX_player_userId",
+                table: "player",
                 column: "userId");
         }
 
@@ -60,7 +60,7 @@ namespace BlackList.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "blackListedPlayer");
+                name: "player");
 
             migrationBuilder.DropTable(
                 name: "user");

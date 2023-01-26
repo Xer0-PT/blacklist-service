@@ -1,8 +1,8 @@
-﻿namespace BlackList.Persistence.Data.Mappings;
-
-using BlackList.Domain.Entities;
+﻿using BlackList.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace BlackList.Persistence.Data.Mappings;
 
 public class UserMapping : IEntityTypeConfiguration<User>
 {
@@ -13,7 +13,7 @@ public class UserMapping : IEntityTypeConfiguration<User>
         builder.HasKey(x => x.Id);
 
         builder
-            .HasMany(x => x.BlackListedPlayers)
+            .HasMany(x => x.Players)
             .WithOne(y => y.User);
 
         builder
