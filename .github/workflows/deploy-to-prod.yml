@@ -1,0 +1,17 @@
+name: Deploy to PROD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-to-uat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Hook
+        run: |
+          set -e
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.PROD_HOOK }})
+          if [[ "$status_code" != "200" ]]; then
+            echo "Unexpected response: $status_code"
+            exit 1
+          fi
