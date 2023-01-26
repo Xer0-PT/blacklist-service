@@ -26,7 +26,7 @@ public class UserService : IUserService
 
         if (user is not null)
         {
-            throw new InvalidOperationException("This user already exists!");
+            return _mapper.Map<UserDto>(user);
         }
 
         user = await _repository.CreateUserAsync(nickname, userFaceitId, cancellationToken);
