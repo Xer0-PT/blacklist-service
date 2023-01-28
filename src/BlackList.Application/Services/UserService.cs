@@ -1,44 +1,35 @@
 ﻿namespace BlackList.Application.Services;
 
+using Abstractions;
 using AutoMapper;
-using BlackList.Application.Abstractions;
-using BlackList.Application.Dtos;
-using System;
-using System.Linq;
-using System.Text;
+using Dtos;
 using System.Threading.Tasks;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly Random _random;
-    private const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private readonly IFaceitGateway _faceitGateway;
 
-    public UserService(IUserRepository repository, Random random, IMapper mapper, IDateTimeProvider dateTimeProvider)
+    public UserService(IUserRepository repository, IMapper mapper, IFaceitGateway faceitGateway)
     {
         _repository = repository;
-        _random = random;
         _mapper = mapper;
-        _dateTimeProvider = dateTimeProvider;
+        _faceitGateway = faceitGateway;
     }
 
-    public async Task<UserDto> CreateUserAsync(CancellationToken cancellationToken)
+    public async Task<UserDto> CreateUserAsync(string nickname, CancellationToken cancellationToken)
     {
-        int num = _random.Next();
+        var userFaceitId = await _faceitGateway.GetFaceitIdAsync(nickname, cancellationToken);
 
-        var randomString = new string(Enumerable.Repeat(chars, 20)
-            .Select(s => s[_random.Next(s.Length)])
-            .ToArray());
+        var user = await _repository.GetUserAsync(userFaceitId, cancellationToken);
 
-        var timestamp = _dateTimeProvider.UtcNow.ToUnixTimeMilliseconds();
+        if (user is not null)
+        {
+            return _mapper.Map<UserDto>(user);
+        }
 
-        var plainTextBytes = Encoding.UTF8.GetBytes(randomString + timestamp);
-
-        var token = Convert.ToBase64String(plainTextBytes);
-
-        var user = await _repository.CreateUserAsync(token, cancellationToken);
+        user = await _repository.CreateUserAsync(nickname, userFaceitId, cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

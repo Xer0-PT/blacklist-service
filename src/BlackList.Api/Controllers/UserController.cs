@@ -1,8 +1,8 @@
-namespace BlackList.Api.Controllers;
-
 using BlackList.Application.Abstractions;
 using BlackList.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
+
+namespace BlackList.Api.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -16,10 +16,17 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserDto>> CreateUser(CancellationToken cancellationToken)
+    public async Task<ActionResult<UserDto>> CreateUser([FromBody] string nickname, CancellationToken cancellationToken)
     {
-        var token = await _userService.CreateUserAsync(cancellationToken);
+        try
+        {
+            var user = await _userService.CreateUserAsync(nickname, cancellationToken);
 
-        return Ok(token);
+            return Ok(user);
+        }
+        catch (ArgumentNullException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

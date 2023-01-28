@@ -22,7 +22,7 @@ namespace BlackList.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BlackList.Domain.Entities.BlackListedPlayer", b =>
+            modelBuilder.Entity("BlackList.Domain.Entities.Player", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,24 +31,31 @@ namespace BlackList.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<bool>("Banned")
+                        .HasColumnType("boolean")
+                        .HasColumnName("banned");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
+
+                    b.Property<Guid>("FaceitId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("faceitId");
 
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("nickName");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("userId");
+                    b.Property<long>("userId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
-                    b.ToTable("blackListedPlayer", (string)null);
+                    b.ToTable("player", (string)null);
                 });
 
             modelBuilder.Entity("BlackList.Domain.Entities.User", b =>
@@ -64,21 +71,25 @@ namespace BlackList.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
-                    b.Property<string>("Token")
+                    b.Property<Guid>("FaceitId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("faceitId");
+
+                    b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("token");
+                        .HasColumnName("nickname");
 
                     b.HasKey("Id");
 
                     b.ToTable("user", (string)null);
                 });
 
-            modelBuilder.Entity("BlackList.Domain.Entities.BlackListedPlayer", b =>
+            modelBuilder.Entity("BlackList.Domain.Entities.Player", b =>
                 {
                     b.HasOne("BlackList.Domain.Entities.User", "User")
-                        .WithMany("BlackListedPlayers")
-                        .HasForeignKey("UserId")
+                        .WithMany("Players")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -87,7 +98,7 @@ namespace BlackList.Persistence.Migrations
 
             modelBuilder.Entity("BlackList.Domain.Entities.User", b =>
                 {
-                    b.Navigation("BlackListedPlayers");
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

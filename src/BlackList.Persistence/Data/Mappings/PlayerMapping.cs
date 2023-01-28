@@ -4,17 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BlackList.Persistence.Data.Mappings;
 
-public class UserMapping : IEntityTypeConfiguration<User>
+public class PlayerMapping : IEntityTypeConfiguration<Player>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Player> builder)
     {
-        builder.ToTable("user");
+        builder.ToTable("player");
 
         builder.HasKey(x => x.Id);
 
         builder
-            .HasMany(x => x.Players)
-            .WithOne(y => y.User);
+            .HasOne(x => x.User)
+            .WithMany(y => y.Players)
+            .HasForeignKey("userId");
 
         builder
             .Property(x => x.Id)
@@ -26,11 +27,14 @@ public class UserMapping : IEntityTypeConfiguration<User>
 
         builder
             .Property(x => x.Nickname)
-            .HasColumnName("nickname");
+            .HasColumnName("nickName");
+
+        builder
+            .Property(x => x.Banned)
+            .HasColumnName("banned");
 
         builder
             .Property(x => x.CreatedAt)
             .HasColumnName("createdAt");
-
     }
 }

@@ -1,3 +1,3 @@
 ﻿namespace BlackList.Application.Dtos;
 
-public record UserDto(Guid FaceitId);
+public record PlayerDto(string Nickname);

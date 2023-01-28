@@ -1,7 +1,6 @@
-﻿namespace BlackList.Application.Services;
+﻿using BlackList.Application.Abstractions;
 
-using BlackList.Application.Abstractions;
-using System;
+namespace BlackList.Application.Services;
 
 public class DateTimeProvider : IDateTimeProvider
 {

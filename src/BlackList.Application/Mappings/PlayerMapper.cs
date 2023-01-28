@@ -4,10 +4,10 @@ using BlackList.Domain.Entities;
 
 namespace BlackList.Application.Mappings;
 
-public class UserMapper : Profile
+public class PlayerMapper : Profile
 {
-    public UserMapper()
+    public PlayerMapper()
     {
-        CreateMap<User, UserDto>();
+        CreateMap<Player, PlayerDto>();
     }
 }
