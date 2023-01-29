@@ -1,7 +1,4 @@
-﻿namespace BlackList.Api.IntegrationTests.Fixtures;
-
-using BlackList.Persistence.Data;
-using DotNet.Testcontainers.Builders;
+﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
@@ -9,23 +6,26 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 
-public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
+namespace BlackList.Api.IntegrationTests.Fixtures;
+
+public class CustomWebApplicationFactory<TProgram, TDbContext> : WebApplicationFactory<TProgram>, IAsyncLifetime
+    where TProgram : class where TDbContext : DbContext
 {
-    private readonly TestcontainerDatabase _container;
+    private readonly PostgreSqlTestcontainer _container;
 
     public CustomWebApplicationFactory()
     {
         _container = new TestcontainersBuilder<PostgreSqlTestcontainer>()
+            .WithImage("postgres:latest")
+            .WithCleanUp(true)
+            .WithAutoRemove(true)
             .WithDatabase(new PostgreSqlTestcontainerConfiguration
             {
                 Database = "postgres",
                 Username = "postgres",
-                Password = "postgres",
+                Password = "postgres"
             })
-            .WithImage("postgres:15.1")
-            .WithCleanUp(true)
             .Build();
     }
 
@@ -33,17 +33,14 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     {
         builder.ConfigureTestServices(services =>
         {
-            // Remove AppDbContext
-            services.RemoveDbContext<BlackListServiceDbContext>();
-
-            // Add DB context pointing to test container
-            services.AddDbContext<BlackListServiceDbContext>(options => 
+            services.RemoveDbContext<TDbContext>();
+            
+            services.AddDbContext<TDbContext>(options => 
             {
                 options.UseNpgsql(_container.ConnectionString); 
             });
-
-            // Ensure schema gets created
-            services.EnsureDbCreated<BlackListServiceDbContext>();
+            
+            services.EnsureDbCreated<TDbContext>();
         });
     }
 

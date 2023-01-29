@@ -1,9 +1,9 @@
-﻿namespace BlackList.Api.UnitTests.Controllers;
-
-using BlackList.Api.Controllers;
+﻿using BlackList.Api.Controllers;
 using BlackList.Application.Abstractions;
 using BlackList.Application.Dtos;
 using Moq;
+
+namespace BlackList.Api.UnitTests.Controllers;
 
 public class UserControllerTests
 {
@@ -20,13 +20,14 @@ public class UserControllerTests
     public async void UserController_CreateUser_Creates()
     {
         // Arrange
+        var nickname = "nickname";
         _service
-            .Setup(x => x.CreateUserAsync(default))
+            .Setup(x => x.CreateUserAsync(nickname, default))
             .ReturnsAsync(It.IsAny<UserDto>())
             .Verifiable();
 
         // Act
-        var result = await _controller.CreateUser(default);
+        await _controller.CreateUser(nickname, default);
 
         // Assert
         _service.Verify();
