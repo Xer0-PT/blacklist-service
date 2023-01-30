@@ -1,26 +1,24 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 using BlackList.Api.Contracts;
 using BlackList.Api.IntegrationTests.Fixtures;
 using BlackList.Application.Dtos;
-using BlackList.Persistence.Data;
 using FluentAssertions;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 
 namespace BlackList.Api.IntegrationTests.Controllers;
 
-// [Collection(SharedTestCollection.Name)]
-public class PlayerControllerTests : IClassFixture<CustomWebApplicationFactory<Program, BlackListServiceDbContext>>
+[Collection(SharedTestCollection.Name)]
+public class PlayerControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly CustomWebApplicationFactory<Program, BlackListServiceDbContext> _factory;
-    // private readonly WireMockFixture _wireMockFixture;
+    private readonly CustomWebApplicationFactory _factory;
+    private readonly WireMockFixture _wireMockFixture;
+    private readonly DatabaseFixture _databaseFixture;
 
-    public PlayerControllerTests(CustomWebApplicationFactory<Program, BlackListServiceDbContext> factory)
+    public PlayerControllerTests(CustomWebApplicationFactory factory, WireMockFixture wireMockFixture, DatabaseFixture databaseFixture)
     {
         _factory = factory;
+        _wireMockFixture = wireMockFixture;
+        _databaseFixture = databaseFixture;
     }
 
     [Fact]
@@ -29,10 +27,10 @@ public class PlayerControllerTests : IClassFixture<CustomWebApplicationFactory<P
         // Arrange
         var client = _factory.CreateClient();
         var user = UserFixture.CreateUser();
-        await _factory.InsertUserAsync(user);
+        await _databaseFixture.InsertUserAsync(user);
 
         var players = PlayerFixture.CreatePlayerRange(10, user.Id);
-        await _factory.InsertPlayerAsync(players);
+        await _databaseFixture.InsertPlayerAsync(players);
 
         // Act
         var response = await client.GetFromJsonAsync<IReadOnlyList<PlayerDto>>($"/api/player?userFaceitId={user.FaceitId}");
@@ -67,39 +65,15 @@ public class PlayerControllerTests : IClassFixture<CustomWebApplicationFactory<P
     {
         // Arrange
         const string playerNickname = "player";
-        // var client = _factory.CreateClient();
+        var client = _factory.CreateClient();
         var user = UserFixture.CreateUser();
-        await _factory.InsertUserAsync(user);
+        await _databaseFixture.InsertUserAsync(user);
         var query = new CreatePlayerQuery { PlayerNickname = "player", UserFaceitId = user.FaceitId };
         
-        // _wireMockFixture.GetRequest(HttpStatusCode.OK, playerNickname);
-
-        var wireMockSvr = WireMockServer.Start();
-        
-        var httpClient = _factory
-            .WithWebHostBuilder(builder =>
-            {
-                builder.UseSetting("FaceitApiConfig:Url", wireMockSvr.Url);
-            })
-            .CreateClient();
-        
-        var request = Request.Create()
-            .WithPath("/players")
-            .UsingGet()
-            .WithParam("nickname", playerNickname);
-        
-        var faceitApiResponse = new FaceitUserDetails { PlayerId = Guid.NewGuid() };
-        var mockResponse = Response.Create()
-            .WithBody(JsonSerializer.Serialize(faceitApiResponse))
-            .WithHeader("Content-Type", "application/json")
-            .WithStatusCode(HttpStatusCode.OK);
-        
-        wireMockSvr
-            .Given(request)
-            .RespondWith(mockResponse);
+        _wireMockFixture.GetRequest(HttpStatusCode.OK, playerNickname);
 
         // Act
-        var response = await httpClient.PostAsJsonAsync($"/api/player?userFaceitId={user.FaceitId}", query);
+        var response = await client.PostAsJsonAsync($"/api/player?userFaceitId={user.FaceitId}", query);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -110,36 +84,14 @@ public class PlayerControllerTests : IClassFixture<CustomWebApplicationFactory<P
     {
         // Arrange
         const string playerNickname = "player";
-        // var client = _factory.CreateClient();
+        var client = _factory.CreateClient();
         var userFaceitId = Guid.NewGuid();
         var query = new CreatePlayerQuery { PlayerNickname = "player", UserFaceitId = userFaceitId };
         
-        var wireMockSvr = WireMockServer.Start();
-        
-        var httpClient = _factory
-            .WithWebHostBuilder(builder =>
-            {
-                builder.UseSetting("FaceitApiConfig:Url", wireMockSvr.Url);
-            })
-            .CreateClient();
-        
-        var request = Request.Create()
-            .WithPath("/players")
-            .UsingGet()
-            .WithParam("nickname", playerNickname);
-        
-        var faceitApiResponse = new FaceitUserDetails { PlayerId = Guid.NewGuid() };
-        var mockResponse = Response.Create()
-            .WithBody(JsonSerializer.Serialize(faceitApiResponse))
-            .WithHeader("Content-Type", "application/json")
-            .WithStatusCode(HttpStatusCode.NotFound);
-        
-        wireMockSvr
-            .Given(request)
-            .RespondWith(mockResponse);
+        _wireMockFixture.GetRequest(HttpStatusCode.NotFound, playerNickname);
         
         // Act
-        var response = await httpClient.PostAsJsonAsync($"/api/player?userFaceitId={userFaceitId}", query);
+        var response = await client.PostAsJsonAsync($"/api/player?userFaceitId={userFaceitId}", query);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();

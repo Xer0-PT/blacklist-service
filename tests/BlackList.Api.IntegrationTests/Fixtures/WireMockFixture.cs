@@ -7,7 +7,7 @@ using WireMock.Server;
 
 namespace BlackList.Api.IntegrationTests.Fixtures;
 
-public class WireMockFixture : IAsyncLifetime
+public sealed class WireMockFixture : IAsyncLifetime
 {
     private WireMockServer? _wireMockServer;
 

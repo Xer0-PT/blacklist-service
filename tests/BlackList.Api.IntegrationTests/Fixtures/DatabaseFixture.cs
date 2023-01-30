@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlackList.Api.IntegrationTests.Fixtures;
 
-public class DatabaseFixture : IAsyncLifetime
+public sealed class DatabaseFixture : IAsyncLifetime
 {
     private PostgreSqlTestcontainer? _container;
     
@@ -27,6 +27,7 @@ public class DatabaseFixture : IAsyncLifetime
         _container = testcontainersBuilder.Build();
 
         await _container.StartAsync();
+        await InitializeDatabase();
     }
 
     public async Task DisposeAsync()
@@ -36,7 +37,14 @@ public class DatabaseFixture : IAsyncLifetime
             await _container.DisposeAsync();
         }
     }
-    
+
+    private async Task InitializeDatabase()
+    {
+        await using var context = CreateDbContext();
+
+        await context.Database.MigrateAsync();
+    }
+
     public string ConnectionString
     {
         get
