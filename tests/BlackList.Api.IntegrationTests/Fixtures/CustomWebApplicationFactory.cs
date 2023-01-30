@@ -1,8 +1,4 @@
-﻿using BlackList.Domain.Entities;
-using BlackList.Persistence.Data;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
+﻿using BlackList.Persistence.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -11,73 +7,29 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackList.Api.IntegrationTests.Fixtures;
 
-public class CustomWebApplicationFactory<TProgram, TDbContext> : WebApplicationFactory<TProgram>, IAsyncLifetime
-    where TProgram : class where TDbContext : DbContext
+public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly PostgreSqlTestcontainer _container;
-    // private readonly WireMockFixture _wireMockFixture;
-
-    public CustomWebApplicationFactory()
+    private readonly WireMockFixture _wireMockFixture;
+    private readonly DatabaseFixture _databaseFixture;
+    public CustomWebApplicationFactory(WireMockFixture wireMockFixture, DatabaseFixture databaseFixture)
     {
-        _container = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithImage("postgres:latest")
-            .WithCleanUp(true)
-            .WithAutoRemove(true)
-            .WithDatabase(new PostgreSqlTestcontainerConfiguration
-            {
-                Database = "postgres",
-                Username = "postgres",
-                Password = "postgres"
-            })
-            .Build();
+        _wireMockFixture = wireMockFixture;
+        _databaseFixture = databaseFixture;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("FaceitApiConfig:Url", _wireMockFixture.WireMockServer!.Url);
+        builder.UseEnvironment("Development");
+        
         builder.ConfigureTestServices(services =>
         {
-            // builder.UseSetting("FaceitApiConfig:Url", _wireMockFixture.WireMockServer!.Url);
+            services.RemoveDbContext<BlackListServiceDbContext>();
             
-            services.RemoveDbContext<TDbContext>();
-
-            services.AddDbContext<TDbContext>(options => { options.UseNpgsql(_container.ConnectionString); });
-
-            services.EnsureDbCreated<TDbContext>();
+            services.AddDbContext<BlackListServiceDbContext>(options => { options.UseNpgsql(_databaseFixture.ConnectionString); });
+            
+            services.EnsureDbCreated<BlackListServiceDbContext>();
         });
-    }
-    
-    public async Task InitializeAsync()
-    {
-        await _container.StartAsync();
-        
-        await using var context = CreateDbContext();
-        await context.Database.MigrateAsync();
-    }
-
-    public new async Task DisposeAsync() => await _container.DisposeAsync();
-
-    private BlackListServiceDbContext CreateDbContext()
-    {
-        return new BlackListServiceDbContext(
-            new DbContextOptionsBuilder<BlackListServiceDbContext>()
-                .UseNpgsql(_container.ConnectionString)
-                .Options);
-    }
-
-    public async Task InsertUserAsync(User data)
-    {
-        await using var context = CreateDbContext();
-
-        await context.User.AddAsync(data);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task InsertPlayerAsync(IEnumerable<Player> data)
-    {
-        await using var context = CreateDbContext();
-
-        await context.Player.AddRangeAsync(data);
-        await context.SaveChangesAsync();
     }
 }
 
