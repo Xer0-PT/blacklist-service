@@ -25,7 +25,7 @@ public class PlayerController : ControllerBase
 
             return Ok(list);
         }
-        catch(ArgumentNullException ex) 
+        catch(KeyNotFoundException ex)
         { 
             return NotFound(ex.Message);
         }
@@ -44,7 +44,7 @@ public class PlayerController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-        catch(ArgumentNullException ex)
+        catch(KeyNotFoundException ex)
         {
             return NotFound(ex.Message);
         }
@@ -57,7 +57,7 @@ public class PlayerController : ControllerBase
             var player = await _playerService.UndoPlayerBanAsync(query.UserFaceitId, query.PlayerNickname, cancellationToken);
             return Ok(player);
         }
-        catch (ArgumentNullException ex)
+        catch (KeyNotFoundException ex)
         {
             return BadRequest(ex.Message);
         }

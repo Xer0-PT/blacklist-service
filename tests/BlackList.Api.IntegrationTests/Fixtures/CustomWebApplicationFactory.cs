@@ -1,4 +1,6 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using BlackList.Domain.Entities;
+using BlackList.Persistence.Data;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +15,7 @@ public class CustomWebApplicationFactory<TProgram, TDbContext> : WebApplicationF
     where TProgram : class where TDbContext : DbContext
 {
     private readonly PostgreSqlTestcontainer _container;
+    // private readonly WireMockFixture _wireMockFixture;
 
     public CustomWebApplicationFactory()
     {
@@ -33,20 +36,49 @@ public class CustomWebApplicationFactory<TProgram, TDbContext> : WebApplicationF
     {
         builder.ConfigureTestServices(services =>
         {
+            // builder.UseSetting("FaceitApiConfig:Url", _wireMockFixture.WireMockServer!.Url);
+            
             services.RemoveDbContext<TDbContext>();
-            
-            services.AddDbContext<TDbContext>(options => 
-            {
-                options.UseNpgsql(_container.ConnectionString); 
-            });
-            
+
+            services.AddDbContext<TDbContext>(options => { options.UseNpgsql(_container.ConnectionString); });
+
             services.EnsureDbCreated<TDbContext>();
         });
     }
-
-    public async Task InitializeAsync() => await _container.StartAsync();
+    
+    public async Task InitializeAsync()
+    {
+        await _container.StartAsync();
+        
+        await using var context = CreateDbContext();
+        await context.Database.MigrateAsync();
+    }
 
     public new async Task DisposeAsync() => await _container.DisposeAsync();
+
+    private BlackListServiceDbContext CreateDbContext()
+    {
+        return new BlackListServiceDbContext(
+            new DbContextOptionsBuilder<BlackListServiceDbContext>()
+                .UseNpgsql(_container.ConnectionString)
+                .Options);
+    }
+
+    public async Task InsertUserAsync(User data)
+    {
+        await using var context = CreateDbContext();
+
+        await context.User.AddAsync(data);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task InsertPlayerAsync(IEnumerable<Player> data)
+    {
+        await using var context = CreateDbContext();
+
+        await context.Player.AddRangeAsync(data);
+        await context.SaveChangesAsync();
+    }
 }
 
 public static class ServiceCollectionExtensions

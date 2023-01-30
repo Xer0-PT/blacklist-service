@@ -5,17 +5,17 @@ public class Player : EntityBase
     public Player()
     { }
 
-    public Player(User user, Guid faceitId, string nickname, DateTimeOffset createdAt)
+    public Player(long userId, Guid faceitId, string nickname, DateTimeOffset createdAt)
     {
-        User = user;
+        UserId = userId;
         FaceitId = faceitId;
         Nickname = nickname;
         CreatedAt = createdAt;
     }
 
     public bool Banned { get; set; } = true;
-    public User User { get; set; } = null!;
-
+    public long UserId { get; set; }
+    
     public void UndoBan()
     {
         Banned = false;

@@ -5,7 +5,7 @@ using BlackList.Persistence.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(AddAutoMapperConfig.Initialize());
-builder.Services.AddRateLimitingServices(builder.Configuration);
+// builder.Services.AddRateLimitingServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddControllers();
@@ -30,7 +30,7 @@ builder.Services.AddCors(opt =>
 
 var app = builder.Build();
 
-app.UseIpRateLimiting();
+// app.UseIpRateLimiting();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
