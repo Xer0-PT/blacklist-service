@@ -71,6 +71,14 @@ public sealed class DatabaseFixture : IAsyncLifetime
         await context.User.AddAsync(data);
         await context.SaveChangesAsync();
     }
+    
+    public async Task InsertPlayerAsync(Player data)
+    {
+        await using var context = CreateDbContext();
+
+        await context.Player.AddAsync(data);
+        await context.SaveChangesAsync();
+    }
 
     public async Task InsertPlayerAsync(IEnumerable<Player> data)
     {

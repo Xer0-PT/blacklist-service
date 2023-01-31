@@ -61,37 +61,182 @@ public class PlayerControllerTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
-    public async void PlayerController_CreateWithCorrectUser_CreatesPlayer()
+    public async void PlayerController_CreateWithCorrectUser_RespondsOk()
+    {
+        // Arrange
+        const string playerNickname = "player";
+        
+        var client = _factory.CreateClient();
+        
+        var user = UserFixture.CreateUser();
+        await _databaseFixture.InsertUserAsync(user);
+        
+        var query = new CreatePlayerQuery { PlayerNickname = playerNickname, UserFaceitId = user.FaceitId };
+        
+        _wireMockFixture.GetRequest(HttpStatusCode.OK, playerNickname);
+
+        // Act
+        var response = await client.PostAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    
+    [Fact]
+    public async void PlayerController_CreateWithIncorrectUser_RespondsNotFound()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        var userFaceitId = Guid.NewGuid();
+        var query = new CreatePlayerQuery { PlayerNickname = "player", UserFaceitId = userFaceitId };
+        
+        // Act
+        var response = await client.PostAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Fact]
+    public async void PlayerController_CreateWithIncorrectPlayer_RespondsNotFound()
     {
         // Arrange
         const string playerNickname = "player";
         var client = _factory.CreateClient();
         var user = UserFixture.CreateUser();
         await _databaseFixture.InsertUserAsync(user);
-        var query = new CreatePlayerQuery { PlayerNickname = "player", UserFaceitId = user.FaceitId };
         
-        _wireMockFixture.GetRequest(HttpStatusCode.OK, playerNickname);
-
+        var query = new CreatePlayerQuery { PlayerNickname = playerNickname, UserFaceitId = user.FaceitId };
+        
+        _wireMockFixture.GetRequest(HttpStatusCode.NotFound, playerNickname);
+        
         // Act
-        var response = await client.PostAsJsonAsync($"/api/player?userFaceitId={user.FaceitId}", query);
+        var response = await client.PostAsJsonAsync("/api/player", query);
 
         // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
     [Fact]
-    public async void PlayerController_CreateWithIncorrecttUser_RespondsNotFound()
+    public async void PlayerController_CreateWithUserBanningHimself_RespondsBadRequest()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        var user = UserFixture.CreateUser();
+        await _databaseFixture.InsertUserAsync(user);
+        
+        var query = new CreatePlayerQuery { PlayerNickname = user.Nickname, UserFaceitId = user.FaceitId };
+                
+        // Act
+        var response = await client.PostAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async void PlayerController_CreateWithUserBanningPlayerAlreadyBanned_RespondsBadRequest()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        
+        var user = UserFixture.CreateUser();
+        await _databaseFixture.InsertUserAsync(user);
+        
+        var player = PlayerFixture.CreatePlayer(user.Id);
+        await _databaseFixture.InsertPlayerAsync(player);
+
+        var query = new CreatePlayerQuery { PlayerNickname = player.Nickname, UserFaceitId = user.FaceitId };
+        
+        // Act
+        var response = await client.PostAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async void PlayerController_CreateWithUserRebanningPlayer_RebansPlayer()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        
+        var user = UserFixture.CreateUser();
+        await _databaseFixture.InsertUserAsync(user);
+        
+        var player = PlayerFixture.CreatePlayer(userId: user.Id, banned: false);
+        await _databaseFixture.InsertPlayerAsync(player);
+
+        var query = new CreatePlayerQuery { PlayerNickname = player.Nickname, UserFaceitId = user.FaceitId };
+        
+        // Act
+        var response = await client.PostAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    
+    [Fact]
+    public async void PlayerController_UpdateWithCorrectUserAndPlayer_RespondsOk()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        
+        var user = UserFixture.CreateUser();
+        await _databaseFixture.InsertUserAsync(user);
+        
+        var player = PlayerFixture.CreatePlayer(user.Id);
+        await _databaseFixture.InsertPlayerAsync(player);
+
+        var query = new UpdatePlayerQuery { PlayerNickname = player.Nickname, UserFaceitId = user.FaceitId };
+        
+        // Act
+        var response = await client.PutAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+    
+    [Fact]
+    public async void PlayerController_UpdateWithIncorrectUser_RespondsNotFound()
     {
         // Arrange
         const string playerNickname = "player";
         var client = _factory.CreateClient();
         var userFaceitId = Guid.NewGuid();
-        var query = new CreatePlayerQuery { PlayerNickname = "player", UserFaceitId = userFaceitId };
         
-        _wireMockFixture.GetRequest(HttpStatusCode.NotFound, playerNickname);
-        
+        var query = new UpdatePlayerQuery { PlayerNickname = playerNickname, UserFaceitId = userFaceitId };
+
         // Act
-        var response = await client.PostAsJsonAsync($"/api/player?userFaceitId={userFaceitId}", query);
+        var response = await client.PutAsJsonAsync("/api/player", query);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Fact]
+    public async void PlayerController_UpdateWithIncorrectPlayer_RespondsNotFound()
+    {
+        // Arrange
+        const string playerNickname = "player";
+        var client = _factory.CreateClient();
+        
+        var user = UserFixture.CreateUser();
+        await _databaseFixture.InsertUserAsync(user);
+
+        var query = new UpdatePlayerQuery { PlayerNickname = playerNickname, UserFaceitId = user.FaceitId };
+
+        // Act
+        var response = await client.PutAsJsonAsync("/api/player", query);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();

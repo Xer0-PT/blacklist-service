@@ -59,7 +59,7 @@ public class PlayerController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
 }

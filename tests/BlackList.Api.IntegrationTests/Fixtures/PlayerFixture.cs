@@ -4,9 +4,10 @@ namespace BlackList.Api.IntegrationTests.Fixtures;
 
 public static class PlayerFixture
 {
-    private static Player CreatePlayer(long userId, Guid? faceitId = null, string? nickname = null,
-        DateTimeOffset? createdAt = null) =>
-        new(userId, faceitId ?? Guid.NewGuid(), nickname ?? "teste", createdAt ?? DateTimeOffset.UtcNow);
+    public static Player CreatePlayer(long userId, Guid? faceitId = null, string? nickname = null,
+        DateTimeOffset? createdAt = null, bool? banned = null) =>
+        new(userId, faceitId ?? Guid.NewGuid(), nickname ?? "player", createdAt ?? DateTimeOffset.UtcNow)
+            { Banned = banned ?? true };
 
     public static Player[] CreatePlayerRange(int size, long userId)
     {

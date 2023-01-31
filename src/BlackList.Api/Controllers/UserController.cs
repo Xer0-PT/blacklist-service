@@ -24,7 +24,7 @@ public class UserController : ControllerBase
 
             return Ok(user);
         }
-        catch (ArgumentNullException ex)
+        catch (KeyNotFoundException ex)
         {
             return NotFound(ex.Message);
         }

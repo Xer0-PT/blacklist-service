@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using BlackList.Domain.Entities;
 using BlackList.Persistence.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
