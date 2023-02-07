@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AspNetCoreRateLimit;
 using BlackList.Api.Extensions;
 using BlackList.Persistence.Data;
@@ -51,4 +52,5 @@ app.MapControllers();
 
 app.Run();
 
+[ExcludeFromCodeCoverage]
 public partial class Program { }

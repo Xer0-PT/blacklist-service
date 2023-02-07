@@ -1,7 +1,9 @@
-﻿using AspNetCoreRateLimit;
+﻿using System.Diagnostics.CodeAnalysis;
+using AspNetCoreRateLimit;
 
 namespace BlackList.Api.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class RateLimitingExtensions
 {
     public static void AddRateLimitingServices(this IServiceCollection services, ConfigurationManager configuration)

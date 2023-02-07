@@ -17,7 +17,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async void UserController_CreateUser_Creates()
+    public async void UserController_CreateUser_CallsCorrectMethod()
     {
         // Arrange
         var nickname = "nickname";

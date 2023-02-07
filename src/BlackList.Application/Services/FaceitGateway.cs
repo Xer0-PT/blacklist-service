@@ -15,7 +15,7 @@ public class FaceitGateway : IFaceitGateway
 
     public async Task<Guid> GetFaceitIdAsync(string nickname, CancellationToken cancellationToken)
     {
-        var response = await _faceitApi.GetUserDetailsAsync(nickname);
+        var response = await _faceitApi.GetUserDetailsAsync(nickname, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

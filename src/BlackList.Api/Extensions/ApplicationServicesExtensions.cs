@@ -1,9 +1,11 @@
-﻿using BlackList.Application.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using BlackList.Application.Abstractions;
 using BlackList.Application.Services;
 using Refit;
 
 namespace BlackList.Api.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ApplicationServicesExtensions
 {
     public static void AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
