@@ -46,7 +46,7 @@ public class PlayerService : IPlayerService
         
         var playerFaceItId = await _faceitGateway.GetFaceitIdAsync(playerNickname, cancellationToken);
 
-        player = await _playerRepository.CreatePlayerAsync(user, playerFaceItId, playerNickname,
+        player = await _playerRepository.CreatePlayerAsync(user.Id, playerFaceItId, playerNickname,
             cancellationToken);
 
         return _mapper.Map<PlayerDto>(player);
@@ -87,9 +87,9 @@ public class PlayerService : IPlayerService
     private async Task<Player> TryGetPlayerAsync(string playerNickname, long userId,
         CancellationToken cancellationToken)
         => await _playerRepository.GetPlayerAsync(playerNickname, userId, cancellationToken) ??
-           throw new ArgumentNullException(playerNickname, "This player does not exist!");
+           throw new KeyNotFoundException($"The player {playerNickname} does not exist!");
 
     private async Task<User> TryGetUserAsync(Guid userFaceitId, CancellationToken cancellationToken)
         => await _userRepository.GetUserAsync(userFaceitId, cancellationToken) ??
-           throw new ArgumentNullException(nameof(User), "This user does not exist!");
+           throw new KeyNotFoundException("This user does not exist!");
 }

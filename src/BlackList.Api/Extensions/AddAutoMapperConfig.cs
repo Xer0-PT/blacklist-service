@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using BlackList.Application.Mappings;
 
 namespace BlackList.Api.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class AddAutoMapperConfig
 {
     public static IMapper Initialize()

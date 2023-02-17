@@ -16,9 +16,9 @@ public class PlayerRepository : IPlayerRepository
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<Player> CreatePlayerAsync(User user, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
+    public async Task<Player> CreatePlayerAsync(long userId, Guid playerFaceitId, string playerNickname, CancellationToken cancellationToken)
     {
-        var player = new Player(user, playerFaceitId, playerNickname, _dateTimeProvider.UtcNow);
+        var player = new Player(userId, playerFaceitId, playerNickname, _dateTimeProvider.UtcNow);
 
         _context.Player.Add(player);
         await _context.SaveChangesAsync(cancellationToken);
@@ -28,14 +28,14 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<IReadOnlyList<Player>> GetAllPlayersAsync(long userId, CancellationToken cancellationToken)
         => await _context.Player
-            .Where(x => x.User.Id == userId && x.Banned == true)
+            .Where(x => x.UserId == userId && x.Banned == true)
             .Distinct()
             .OrderBy(x => x.Nickname)
             .ToListAsync(cancellationToken);
 
     public async Task<Player?> GetPlayerAsync(string playerNickname, long userId, CancellationToken cancellationToken)
         => await _context.Player
-            .Where(x => EF.Functions.ILike(x.Nickname, playerNickname) && x.User.Id == userId)
+            .Where(x => EF.Functions.ILike(x.Nickname, playerNickname) && x.UserId == userId)
             .FirstOrDefaultAsync(cancellationToken);
 
     public async Task SaveChangesAsync(Player player, CancellationToken cancellationToken)

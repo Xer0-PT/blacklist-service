@@ -15,11 +15,11 @@ public class FaceitGateway : IFaceitGateway
 
     public async Task<Guid> GetFaceitIdAsync(string nickname, CancellationToken cancellationToken)
     {
-        var response = await _faceitApi.GetUserDetailsAsync(nickname);
+        var response = await _faceitApi.GetUserDetailsAsync(nickname, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new ArgumentNullException(nickname, "This player does not exist!");
+            throw new KeyNotFoundException($"The player {nickname} does not exist!");
         }
 
         var playerDetails = await response.Content.ReadFromJsonAsync<FaceitUserDetails>(cancellationToken: cancellationToken);

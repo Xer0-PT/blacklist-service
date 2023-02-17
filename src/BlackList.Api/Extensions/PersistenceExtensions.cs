@@ -1,10 +1,12 @@
-﻿using BlackList.Application.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using BlackList.Application.Abstractions;
 using BlackList.Persistence.Data;
 using BlackList.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlackList.Api.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class PersistenceExtensions
 {
     public static void AddPersistenceServices(this IServiceCollection services, ConfigurationManager configuration)

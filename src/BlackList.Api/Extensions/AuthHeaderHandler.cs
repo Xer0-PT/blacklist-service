@@ -1,7 +1,9 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 
 namespace BlackList.Api.Extensions;
 
+[ExcludeFromCodeCoverage]
 public class AuthHeaderHandler : DelegatingHandler
 {
     private readonly IConfiguration _configuration;

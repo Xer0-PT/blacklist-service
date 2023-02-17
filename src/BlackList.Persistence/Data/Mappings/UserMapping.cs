@@ -12,9 +12,9 @@ public class UserMapping : IEntityTypeConfiguration<User>
 
         builder.HasKey(x => x.Id);
 
-        builder
-            .HasMany(x => x.Players)
-            .WithOne(y => y.User);
+        // builder
+        //     .HasMany<Player>()
+        //     .WithOne();
 
         builder
             .Property(x => x.Id)

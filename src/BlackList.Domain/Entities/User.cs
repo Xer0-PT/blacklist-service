@@ -7,7 +7,5 @@ public class User : EntityBase
         FaceitId = faceitId;
         Nickname = nickname;
         CreatedAt = createdAt;
-        Players = new List<Player>();
     }
-    public ICollection<Player> Players { get; set; }
 }

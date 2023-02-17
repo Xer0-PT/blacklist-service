@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlackList.Persistence.Migrations
 {
     [DbContext(typeof(BlackListServiceDbContext))]
-    [Migration("20230126004739_InitDb")]
+    [Migration("20230129204335_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
@@ -51,12 +51,13 @@ namespace BlackList.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("nickName");
 
-                    b.Property<long>("userId")
-                        .HasColumnType("bigint");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("userId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("player", (string)null);
                 });
@@ -90,18 +91,11 @@ namespace BlackList.Persistence.Migrations
 
             modelBuilder.Entity("BlackList.Domain.Entities.Player", b =>
                 {
-                    b.HasOne("BlackList.Domain.Entities.User", "User")
-                        .WithMany("Players")
-                        .HasForeignKey("userId")
+                    b.HasOne("BlackList.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BlackList.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,9 +13,13 @@ public class PlayerMapping : IEntityTypeConfiguration<Player>
         builder.HasKey(x => x.Id);
 
         builder
-            .HasOne(x => x.User)
-            .WithMany(y => y.Players)
-            .HasForeignKey("userId");
+            .Property(x => x.UserId)
+            .HasColumnName("userId");
+
+        builder
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(x => x.UserId);
 
         builder
             .Property(x => x.Id)

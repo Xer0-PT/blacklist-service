@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using BlackList.Domain.Entities;
 using BlackList.Persistence.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ public class BlackListServiceDbContext : DbContext
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class BlackListServiceContextFactory : IDesignTimeDbContextFactory<BlackListServiceDbContext>
 {
     public BlackListServiceDbContext CreateDbContext(string[] args)
