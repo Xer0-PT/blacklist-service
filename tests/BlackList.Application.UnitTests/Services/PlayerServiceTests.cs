@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BlackList.Application.Abstractions;
+using BlackList.Application.Dtos;
 using BlackList.Application.Services;
 using BlackList.Domain.Entities;
 using FluentAssertions;
@@ -86,6 +87,7 @@ public class PlayerServiceTests
         await _target.CreatePlayerAsync(It.IsAny<Guid>(), "", default);
         
         // Assert
+        player.Banned.Should().BeTrue();
         _userRepository.Verify();
         _playerRepository.Verify();
     }
@@ -112,6 +114,152 @@ public class PlayerServiceTests
         await _target.Invoking(x => x.CreatePlayerAsync(It.IsAny<Guid>(), player.Nickname, default))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("This user already has this player blacklisted!");
+        _userRepository.Verify();
+        _playerRepository.Verify();
+    }
+    
+    [Fact]
+    public async Task CreatePlayer_WithCorrectData_CreatesPlayer()
+    {
+        // Arrange
+        const string playerNickname = "player";
+        var guid = Guid.NewGuid();
+        var user = new User("nickname", It.IsAny<Guid>(), default);
+
+        _userRepository
+            .Setup(x => x.GetUserAsync(user.FaceitId, default))
+            .ReturnsAsync(user)
+            .Verifiable();
+
+        _playerRepository
+            .Setup(x => x.GetPlayerAsync(playerNickname, user.Id, default))
+            .ReturnsAsync((Player)null!)
+            .Verifiable();
+        
+        _gateway
+            .Setup(x => x.GetFaceitIdAsync(playerNickname, default))
+            .ReturnsAsync(guid)
+            .Verifiable();
+
+        // Act
+        await _target.CreatePlayerAsync(user.FaceitId, playerNickname, default);
+        
+        // Assert
+        _userRepository.Verify();
+        _playerRepository.Verify();
+        _gateway.Verify();
+    }
+
+    [Fact]
+    public async Task GetAllPlayers_WithNonExistingUser_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        _userRepository
+            .Setup(x => x.GetUserAsync(It.IsAny<Guid>(), default))
+            .ReturnsAsync((User)null!)
+            .Verifiable();
+        
+        // Act
+        // Assert
+        await _target.Invoking(x => x.GetAllPlayersAsync(It.IsAny<Guid>(), default))
+            .Should().ThrowAsync<KeyNotFoundException>()
+            .WithMessage("This user does not exist!");
+        _userRepository.Verify();
+    }
+    
+    [Fact]
+    public async Task GetAllPlayers_WithExistingUser_ReturnsPlayerList()
+    {
+        // Arrange
+        var user = new User("nickname", It.IsAny<Guid>(), default);
+        
+        _userRepository
+            .Setup(x => x.GetUserAsync(user.FaceitId, default))
+            .ReturnsAsync(user)
+            .Verifiable();
+        
+        _playerRepository
+            .Setup(x => x.GetAllPlayersAsync(user.Id, default))
+            .ReturnsAsync(It.IsAny<IReadOnlyList<Player>>())
+            .Verifiable();
+        
+        // Act
+        await _target.GetAllPlayersAsync(user.FaceitId, default);
+        
+        // Assert
+        _userRepository.Verify();
+        _playerRepository.Verify();
+    }
+    
+    [Fact]
+    public async Task UndoPlayerBan_WithNonExistingUser_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        _userRepository
+            .Setup(x => x.GetUserAsync(It.IsAny<Guid>(), default))
+            .ReturnsAsync((User)null!)
+            .Verifiable();
+        
+        // Act
+        // Assert
+        await _target.Invoking(x => x.UndoPlayerBanAsync(It.IsAny<Guid>(), "", default))
+            .Should().ThrowAsync<KeyNotFoundException>()
+            .WithMessage("This user does not exist!");
+        _userRepository.Verify();
+    }
+    
+    [Fact]
+    public async Task UndoPlayerBan_WithNonExistingPlayer_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        const string playerNickname = "player";
+        var user = new User("nickname", It.IsAny<Guid>(), default);
+        
+        _userRepository
+            .Setup(x => x.GetUserAsync(user.FaceitId, default))
+            .ReturnsAsync(user)
+            .Verifiable();
+        
+        _playerRepository
+            .Setup(x => x.GetPlayerAsync(playerNickname, It.IsAny<long>(), default))
+            .ReturnsAsync((Player)null!)
+            .Verifiable();
+        
+        // Act
+        // Assert
+        await _target.Invoking(x => x.UndoPlayerBanAsync(It.IsAny<Guid>(), playerNickname, default))
+            .Should().ThrowAsync<KeyNotFoundException>()
+            .WithMessage($"The player {playerNickname} does not exist!");
+        _userRepository.Verify();
+        _playerRepository.Verify();
+    }
+    
+    [Fact]
+    public async Task UndoPlayerBan_WithCorrectData_RebansPlayer()
+    {
+        // Arrange
+        var player = new Player();
+        var user = new User("nickname", It.IsAny<Guid>(), default);
+        
+        _userRepository
+            .Setup(x => x.GetUserAsync(user.FaceitId, default))
+            .ReturnsAsync(user)
+            .Verifiable();
+        
+        _playerRepository
+            .Setup(x => x.GetPlayerAsync(player.Nickname, It.IsAny<long>(), default))
+            .ReturnsAsync(player)
+            .Verifiable();
+        
+        _playerRepository
+            .Setup(x => x.SaveChangesAsync(player, default))
+            .Verifiable();
+        
+        // Act
+        await _target.UndoPlayerBanAsync(user.FaceitId, player.Nickname, default);
+        
+        // Assert
+        player.Banned.Should().BeFalse();
         _userRepository.Verify();
         _playerRepository.Verify();
     }

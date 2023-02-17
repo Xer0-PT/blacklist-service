@@ -20,7 +20,7 @@ public class FaceitGatewayTests
     }
 
     [Fact]
-    public async Task GetFaceitIdAsync_WhenNotSuccessStatusCode_ReturnsPlayerId()
+    public async Task GetFaceitIdAsync_WhenIsSuccessStatusCode_ReturnsPlayerId()
     {
         // Arrange
         const string nickname = "test";
@@ -41,7 +41,7 @@ public class FaceitGatewayTests
     }
 
     [Fact]
-    public async Task GetFaceitIdAsync_WhenNotSuccessStatusCode_ThrowsException()
+    public async Task GetFaceitIdAsync_WhenIsNotSuccessStatusCode_ThrowsException()
     {
         // Arrange
         const string nickname = "test";

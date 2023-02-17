@@ -34,6 +34,7 @@ public class BlackListServiceDbContext : DbContext
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class BlackListServiceContextFactory : IDesignTimeDbContextFactory<BlackListServiceDbContext>
 {
     public BlackListServiceDbContext CreateDbContext(string[] args)

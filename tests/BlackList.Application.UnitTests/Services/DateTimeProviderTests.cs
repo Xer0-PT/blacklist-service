@@ -1,23 +1,31 @@
-﻿using BlackList.Application.Services;
+﻿using BlackList.Application.Abstractions;
+using FluentAssertions;
+using Moq;
 
 namespace BlackList.Application.UnitTests.Services;
 
 public class DateTimeProviderTests
 {
-    private readonly DateTimeProvider _target;
-    private readonly DateTime _date = new (2023, 02, 06, 12, 12, 12);
+    private readonly Mock<IDateTimeProvider> _mock;
 
     public DateTimeProviderTests()
     {
-        // _target = new DateTimeProvider(_date);
+        _mock = new Mock<IDateTimeProvider>();
     }
 
-    [Fact(Skip = "Solve DateTimeProvider dependency")]
+    [Fact]
     public void DateTimeProvider_GivesExpectedDateTime()
     {
-        var expectedDate = new DateTime(2023, 02, 06, 12, 12, 12);
-        var date = _target.UtcNow;
+        // Arrange
+        var expectedDate = DateTimeOffset.UtcNow;
+        _mock
+            .Setup(x => x.UtcNow)
+            .Returns(expectedDate);
+
+        // Act
+        var date = _mock.Object.UtcNow;
         
-        Assert.Equal(date, expectedDate);
+        // Assert
+        date.Should().Be(expectedDate);
     }
 }
