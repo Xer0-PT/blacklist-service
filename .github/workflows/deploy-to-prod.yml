@@ -15,3 +15,13 @@ jobs:
             echo "Unexpected response: $status_code"
             exit 1
           fi
+
+      - name: Wait for Render Deployment
+        uses: bounceapp/render-action@0.6.0
+        with:
+          render-token: ${{ secrets.RENDER_TOKEN }}
+          github-token: ${{ secrets.GIT_TOKEN }}
+          service-id: ${{ secrets.PROD_RENDER_ID }}
+          retries: 20
+          wait: 16000
+          sleep: 30000
